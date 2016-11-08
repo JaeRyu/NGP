@@ -180,8 +180,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			DrawBackGround(memdc, hBackGround, mapY);
 
 			DrawPlane(memdc, px, py);
-
-			
+			//여기
+			int a;
 			// -- 여기까지
 			BitBlt(hdc, 0, 0, rt.right, rt.bottom, memdc, 0, 0, SRCCOPY);
 			SelectObject(memdc, oldbit);
