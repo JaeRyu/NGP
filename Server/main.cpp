@@ -2,15 +2,21 @@
 #include <winsock2.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include "Objects.h"
+#include "Define.h"
+#include "Player.h"
+
+
+//#include "Player.h"
 
 #define SERVERPORT 9000
 #define BUFSIZE    512
 
-typedef struct {
-	int clientNum;
-	bool key[5];
-}KEYDATA;
+
+INFO position;
+//CObjects* pObj;
+//CPlayer* pPlayer;
+KEYDATA keyData;
+SOCKET client_sock[2];
 
 void err_quit(char *msg)
 {
@@ -38,9 +44,6 @@ void err_display(char *msg)
 	LocalFree(lpMsgBuf);
 }
 
-KEYDATA keyData;
-SOCKET client_sock[2];
-
 
 DWORD WINAPI RecvThread(LPVOID clientNum)
 {
@@ -48,11 +51,13 @@ DWORD WINAPI RecvThread(LPVOID clientNum)
 	int n = (int)clientNum;
 	int addrlen;
 	int retval;
-	SOCKADDR_IN clientaddr;
 	char buf[5];
-	INFO position;
-	position.posX = 200;
-	position.posY = 600;
+	SOCKADDR_IN clientaddr;
+	CPlayer* pPlayer = new CPlayer;
+
+	pPlayer->SetKeyData(keyData);
+	pPlayer->SetInfo(position);
+
 
 	addrlen = sizeof(clientaddr);
 	getpeername(client_sock[n], (SOCKADDR *)&clientaddr, &addrlen);
@@ -65,16 +70,23 @@ DWORD WINAPI RecvThread(LPVOID clientNum)
 		}
 		else if (retval == 0)
 			break;
+		
 
-		if (buf[0])
+		for (int i = 0; i < 5; ++i)
+		{
+			//pObj->GetKeyData().key[i];
+			keyData.key[i] = buf[i];
+		}
+		pPlayer->Update();
+
+		/*if (buf[0])
 			position.posY -= 5;
 		if (buf[1])
 			position.posY += 5;
 		if (buf[2])
 			position.posX -= 5;
 		if (buf[3])
-			position.posX += 5;
-
+			position.posX += 5;*/
 		Sleep(50);
 
 		retval = send(client_sock[n], (char*)&position, sizeof(INFO), 0);
@@ -90,6 +102,7 @@ DWORD WINAPI RecvThread(LPVOID clientNum)
 
 int main()
 {
+	//CObjects::CObjects();
 	int retval;
 	WSADATA wsa;
 	int clientSize = 0;
@@ -97,6 +110,7 @@ int main()
 		return 1;
 	for (int i = 0; i < 5; ++i)
 	{
+		//pObj->GetKeyData().key[i] = false;
 		keyData.key[i] = false;
 	}
 
@@ -130,7 +144,6 @@ int main()
 			(LPVOID)clientSize, 0, NULL);
 		
 	}
-
 
 	closesocket(listen_sock);
 	WSACleanup();

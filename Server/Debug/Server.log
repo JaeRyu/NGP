@@ -1,3 +1,4 @@
 ﻿  main.cpp
-  Server.vcxproj -> c:\users\sweetmyhome\documents\visual studio 2015\Projects\ShootingStrike\Debug\Server.exe
-  Server.vcxproj -> c:\users\sweetmyhome\documents\visual studio 2015\Projects\ShootingStrike\Debug\Server.pdb (Full PDB)
+c:\users\user\desktop\shooting_strike_넷겜플\ngp\server\main.cpp(78): warning C4800: 'char': forcing value to bool 'true' or 'false' (performance warning)
+  Server.vcxproj -> C:\Users\User\Desktop\Shooting_Strike_넷겜플\NGP\Debug\Server.exe
+  Server.vcxproj -> C:\Users\User\Desktop\Shooting_Strike_넷겜플\NGP\Debug\Server.pdb (Full PDB)
