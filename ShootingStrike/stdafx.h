@@ -26,8 +26,3 @@
 
 
 
-typedef struct {
-	WORD posX;
-	WORD posY;
-	BYTE state;
-}INFO;

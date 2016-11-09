@@ -3,7 +3,8 @@
 
 #include "stdafx.h"
 #include "ShootingStrike.h"
-#include"mThread.h"
+#include "Network.h"
+#include "structType.h"
 
 #define MAX_LOADSTRING 120
 
@@ -18,14 +19,14 @@ WCHAR szWindowClass[MAX_LOADSTRING];            // 기본 창 클래스 이름입니다.
 const int windowSizeW = 450;
 const int windowsizeH = 800;
 bool key[5];
-INFO pPos;
+extern INFO pPos;
 
 // 이 코드 모듈에 들어 있는 함수의 정방향 선언입니다.
 ATOM                MyRegisterClass(HINSTANCE hInstance);
 BOOL                InitInstance(HINSTANCE, int);
 LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
 //INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
-DWORD WINAPI RecvThread(LPVOID parameter);
+
 
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
@@ -134,10 +135,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	static int mapY;
 	static HBITMAP hBackGround;
 	static int px, py;
+	static SOCKET sock;
 	//static bool key[4];
     switch (message)
     {
 	case WM_CREATE:
+		sock = InitSocket(0);
+		ConnectToServer(sock);
+		
 		mapY = 0;
 		hBackGround = LoadBitmap(hInst, MAKEINTRESOURCE(IDB_BITMAP1));
 		SetTimer(hWnd, 0, 10, NULL);
@@ -232,6 +237,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	}
 	break;
     case WM_DESTROY:
+		CloseSocket(sock);
         PostQuitMessage(0);
         break;
     default:
@@ -288,46 +294,3 @@ void DrawPlane(HDC memdc, int x, int y)
 
 
 
-DWORD WINAPI RecvThread(LPVOID parameter)
-{
-	int retval;
-	WSADATA wsa;
-	WSAStartup(MAKEWORD(2, 2), &wsa);
-
-	SOCKET sock = socket(AF_INET, SOCK_STREAM, 0);
-	if (sock == INVALID_SOCKET) err_quit("socket()");
-
-	// connect()
-	SOCKADDR_IN serveraddr;
-	ZeroMemory(&serveraddr, sizeof(serveraddr));
-	serveraddr.sin_family = AF_INET;
-	serveraddr.sin_addr.s_addr = inet_addr("127.0.0.1");
-	serveraddr.sin_port = htons(9000);
-	retval = connect(sock, (SOCKADDR *)&serveraddr, sizeof(serveraddr));
-	if (retval == SOCKET_ERROR) err_quit("connect()");
-	int len;
-	while (1) {
-		
-
-		// 데이터 보내기
-		retval = send(sock, (char*)&key, sizeof(key), 0);
-		if (retval == SOCKET_ERROR) {
-			err_display("send()");
-			break;
-		}
-		//printf("[TCP 클라이언트] %d바이트를 보냈습니다.\n", retval);
-
-		// 데이터 받기
-		retval = recv(sock, (char *)&pPos, sizeof(pPos), 0);
-		if (retval == SOCKET_ERROR) {
-			err_display("recv()");
-			break;
-		}
-		else if (retval == 0)
-			break;
-	}
-	closesocket(sock);
-
-	WSACleanup();
-	return 0;
-}

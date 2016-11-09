@@ -66,6 +66,7 @@ DWORD WINAPI RecvThread(LPVOID clientNum)
 		else if (retval == 0)
 			break;
 
+		keyData.key[0] = buf[0];
 		if (buf[0])
 			position.posY -= 5;
 		if (buf[1])
