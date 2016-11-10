@@ -33,7 +33,10 @@
     <ClInclude Include="ShootingStrike.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="mThread.h">
+    <ClInclude Include="Network.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="structType.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
@@ -42,6 +45,9 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="ShootingStrike.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Network.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

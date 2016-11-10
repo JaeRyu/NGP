@@ -1,6 +1,38 @@
+#pragma once
+
+#include "stdafx.h"
 #include "Network.h"
 #include "structType.h"
-#include "ShootingStrike.h"
+
+
+
+void err_quit(char *msg)
+{
+	LPVOID lpMsgBuf;
+	FormatMessage(
+		FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM,
+		NULL, WSAGetLastError(),
+		MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+		(LPTSTR)&lpMsgBuf, 0, NULL);
+	MessageBox(NULL, (LPCTSTR)lpMsgBuf, msg, MB_ICONERROR);
+	LocalFree(lpMsgBuf);
+	exit(1);
+}
+
+
+void err_display(char *msg)
+{
+	LPVOID lpMsgBuf;
+	FormatMessage(
+		FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM,
+		NULL, WSAGetLastError(),
+		MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+		(LPTSTR)&lpMsgBuf, 0, NULL);
+	MessageBox(NULL, (LPCTSTR)lpMsgBuf, msg, MB_ICONERROR);
+	LocalFree(lpMsgBuf);
+}
+
+
 
 SOCKET InitSocket(int retval)
 {
@@ -35,15 +67,15 @@ void CloseSocket(SOCKET sock)
 
 DWORD WINAPI RecvThread(LPVOID parameter)
 {
-	SENDPACKET sp = (SENDPACKET&)parameter;
+	RECVPACKET sp = (RECVPACKET&)parameter;
+
 	int retval;
 
-	
 	int len;
 	while (1) {
 		
 		// 데이터 받기
-		retval = recv(sp.sock, (char *)&pPos, sizeof(pPos), 0);
+		retval = recv(sp.sock, (char *)&sp.iPos, sizeof(sp.iPos), 0);
 		if (retval == SOCKET_ERROR) {
 			err_display("recv()");
 			break;

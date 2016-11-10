@@ -18,14 +18,12 @@ WCHAR szWindowClass[MAX_LOADSTRING];            // 기본 창 클래스 이름입니다.
 
 const int windowSizeW = 450;
 const int windowsizeH = 800;
-bool key[5];
-extern INFO pPos;
 
-// 이 코드 모듈에 들어 있는 함수의 정방향 선언입니다.
-ATOM                MyRegisterClass(HINSTANCE hInstance);
-BOOL                InitInstance(HINSTANCE, int);
+INFO pPos;
+
+
 LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
-//INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
+
 
 
 
@@ -66,59 +64,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 
 
-//
-//  함수: MyRegisterClass()
-//
-//  목적: 창 클래스를 등록합니다.
-//
-ATOM MyRegisterClass(HINSTANCE hInstance)
-{
-    WNDCLASSEXW wcex;
 
-    wcex.cbSize = sizeof(WNDCLASSEX);
-
-    wcex.style          = CS_HREDRAW | CS_VREDRAW;
-    wcex.lpfnWndProc    = WndProc;
-    wcex.cbClsExtra     = 0;
-    wcex.cbWndExtra     = 0;
-    wcex.hInstance      = hInstance;
-    wcex.hIcon          = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_SHOOTINGSTRIKE));
-    wcex.hCursor        = LoadCursor(nullptr, IDC_ARROW);
-    wcex.hbrBackground  = (HBRUSH)(COLOR_WINDOW+1);
-    wcex.lpszMenuName   = MAKEINTRESOURCEW(IDC_SHOOTINGSTRIKE);
-    wcex.lpszClassName  = szWindowClass;
-    wcex.hIconSm        = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
-
-    return RegisterClassExW(&wcex);
-}
-
-//
-//   함수: InitInstance(HINSTANCE, int)
-//
-//   목적: 인스턴스 핸들을 저장하고 주 창을 만듭니다.
-//
-//   설명:
-//
-//        이 함수를 통해 인스턴스 핸들을 전역 변수에 저장하고
-//        주 프로그램 창을 만든 다음 표시합니다.
-//
-BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
-{
-   hInst = hInstance; // 인스턴스 핸들을 전역 변수에 저장합니다.
-
-   HWND hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
-      CW_USEDEFAULT, 0, windowSizeW, windowsizeH, nullptr, nullptr, hInstance, nullptr);
-
-   if (!hWnd)
-   {
-      return FALSE;
-   }
-
-   ShowWindow(hWnd, nCmdShow);
-   UpdateWindow(hWnd);
-
-   return TRUE;
-}
 
 //
 //  함수: WndProc(HWND, UINT, WPARAM, LPARAM)
@@ -136,6 +82,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	static HBITMAP hBackGround;
 	static int px, py;
 	static SOCKET sock;
+	static bool key[5];
 	//static bool key[4];
     switch (message)
     {
@@ -146,7 +93,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		mapY = 0;
 		hBackGround = LoadBitmap(hInst, MAKEINTRESOURCE(IDB_BITMAP1));
 		SetTimer(hWnd, 0, 10, NULL);
-		CreateThread(NULL, 0, RecvThread,NULL, 0, NULL);
+		CreateThread(NULL, 0, RecvThread, (LPVOID)&RECVPACKET(sock, pPos) , 0, NULL);
+		
+
 		px = 200;
 		py = 600;
 			break;
@@ -167,7 +116,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 			DrawPlane(memdc, px, py);
 			//여기
-			int a;
+
 			// -- 여기까지
 			BitBlt(hdc, 0, 0, rt.right, rt.bottom, memdc, 0, 0, SRCCOPY);
 			SelectObject(memdc, oldbit);
@@ -215,6 +164,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			key[3] = true;
 			break;
 		}
+		CreateThread(NULL, 0, SendThread, (LPVOID)&SENDPACKET(sock, key), 0, NULL);
+
 	}
 		break;
 	case WM_KEYUP:
@@ -234,6 +185,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			key[3] = false;
 			break;
 		}
+		CreateThread(NULL, 0, SendThread, (LPVOID)&SENDPACKET(sock, key), 0, NULL);
+
+
 	}
 	break;
     case WM_DESTROY:

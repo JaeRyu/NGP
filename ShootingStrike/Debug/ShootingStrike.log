@@ -1,2 +1,8 @@
-﻿  ShootingStrike.vcxproj -> C:\Users\User\Desktop\Shooting_Strike_넷겜플\NGP\Debug\ShootingStrike.exe
-  ShootingStrike.vcxproj -> C:\Users\User\Desktop\Shooting_Strike_넷겜플\NGP\Debug\ShootingStrike.pdb (Full PDB)
+﻿  ShootingStrike.cpp
+  Network.cpp
+c:\users\sweetmyhome\documents\visual studio 2015\projects\shootingstrike\shootingstrike\network.cpp(55): warning C4996: 'inet_addr': Use inet_pton() or InetPton() instead or define _WINSOCK_DEPRECATED_NO_WARNINGS to disable deprecated API warnings
+  c:\program files (x86)\windows kits\8.1\include\um\winsock2.h(1850): note: 'inet_addr' 선언을 참조하십시오.
+c:\users\sweetmyhome\documents\visual studio 2015\projects\shootingstrike\shootingstrike\network.cpp(74): warning C4101: 'len' :참조되지 않은 지역 변수입니다.
+  코드를 생성하고 있습니다...
+  ShootingStrike.vcxproj -> C:\Users\SweetMyHome\Documents\Visual Studio 2015\Projects\ShootingStrike\Debug\ShootingStrike.exe
+  ShootingStrike.vcxproj -> C:\Users\SweetMyHome\Documents\Visual Studio 2015\Projects\ShootingStrike\Debug\ShootingStrike.pdb (Full PDB)
