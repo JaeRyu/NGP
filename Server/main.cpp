@@ -44,6 +44,7 @@ void err_display(char *msg)
 	LocalFree(lpMsgBuf);
 }
 
+//Ä¿¹Ô¿£ Çª½ÃÇª½Ã
 
 DWORD WINAPI RecvThread(LPVOID clientNum)
 {
