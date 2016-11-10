@@ -73,15 +73,14 @@ DWORD WINAPI RecvThread(LPVOID clientNum)
 			break;
 		
 
-		for (int i = 0; i < 5; ++i)
+		if (buf[0])for (int i = 0; i < 5; ++i)
 		{
 			//pObj->GetKeyData().key[i];
 			keyData.key[i] = buf[i];
 		}
 		pPlayer->Update();
 
-		/*if (buf[0])
-			position.posY -= 5;
+		/*if (buf[0])			position.posY -= 5;
 		if (buf[1])
 			position.posY += 5;
 		if (buf[2])
