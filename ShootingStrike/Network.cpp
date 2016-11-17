@@ -1,9 +1,6 @@
 #pragma once
-
-#include "stdafx.h"
-#include "Network.h"
-#include "structType.h"
-
+#include"stdafx.h"
+#include"Network.h"
 
 
 void err_quit(char *msg)
@@ -52,7 +49,7 @@ void ConnectToServer(SOCKET sock)
 	SOCKADDR_IN serveraddr;
 	ZeroMemory(&serveraddr, sizeof(serveraddr));
 	serveraddr.sin_family = AF_INET;
-	serveraddr.sin_addr.s_addr = inet_addr("127.0.0.1");
+	serveraddr.sin_addr.s_addr = inet_addr("192.168.80.182");
 	serveraddr.sin_port = htons(9000);
 	int retval = connect(sock, (SOCKADDR *)&serveraddr, sizeof(serveraddr));
 	if (retval == SOCKET_ERROR) err_quit("connect()");
@@ -67,32 +64,39 @@ void CloseSocket(SOCKET sock)
 
 DWORD WINAPI RecvThread(LPVOID parameter)
 {
-	RECVPACKET sp = (RECVPACKET&)parameter;
-
+	RECVPACKET sp = *(RECVPACKET *)parameter;
+	CClientManager *Manager = sp.Manager;
 	int retval;
-
+	INFO buf;
 	int len;
 	while (1) {
 		
 		// 데이터 받기
-		retval = recv(sp.sock, (char *)&sp.iPos, sizeof(sp.iPos), 0);
+		retval = 0;
+		retval = recv(sp.sock, (char *)&buf, sizeof(INFO), 0);
 		if (retval == SOCKET_ERROR) {
 			err_display("recv()");
 			break;
 		}
 		else if (retval == 0)
 			break;
+
+		Manager->vPlane[0].SetInfo(buf);
 	}
 	return 0;
 }
 DWORD WINAPI SendThread(LPVOID parameter)
 {
-	SENDPACKET sp = (SENDPACKET&)parameter;
+	SENDPACKET sp = *(SENDPACKET*)parameter;
 
 	int retval = send(sp.sock, (char*)&sp.key, sizeof(sp.key), 0);
 
 	if (retval == SOCKET_ERROR) {
 		err_display("send()");
 	}
+	//char buf[2];
+	//wsprintf(buf, "%d", sp.key[4]);
+	//MessageBox(NULL, buf, NULL, MB_OK);
+
 	return 0;
 }

@@ -1,23 +1,15 @@
 // ShootingStrike.cpp : 응용 프로그램에 대한 진입점을 정의합니다.
 //
-
-#include "stdafx.h"
-#include "ShootingStrike.h"
-#include "Network.h"
-#include "structType.h"
-
+#include"stdafx.h"
+#include"ShootingStrike.h"
+#include "userInclude.h"
 #define MAX_LOADSTRING 120
-
-void DrawBackGround(HDC& memdc, HBITMAP& hBackGround, int& mapY);
-void DrawPlane(HDC memdc, int x, int y);
 
 // 전역 변수:
 HINSTANCE hInst;                                // 현재 인스턴스입니다.
 WCHAR szTitle[MAX_LOADSTRING];                  // 제목 표시줄 텍스트입니다.
 WCHAR szWindowClass[MAX_LOADSTRING];            // 기본 창 클래스 이름입니다.
 
-const int windowSizeW = 450;
-const int windowsizeH = 800;
 
 INFO pPos;
 
@@ -48,7 +40,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 	// 윈도우 생성
 	HWND hWnd = CreateWindow("MyWndClass", "ShootingStrike", WS_OVERLAPPEDWINDOW,
-		0, 0, 450, 800, NULL, NULL, hInstance, NULL);
+		0, 0, windowSizeW, windowsizeH, NULL, NULL, hInstance, NULL);
 	if (hWnd == NULL) return 1;
 	ShowWindow(hWnd, nCmdShow);
 	UpdateWindow(hWnd);
@@ -61,9 +53,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	}
 	return msg.wParam;
 }
-
-
-
 
 
 //
@@ -83,21 +72,26 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	static int px, py;
 	static SOCKET sock;
 	static bool key[5];
-	//static bool key[4];
+
+	static CClientManager *pManager;
+	static RECVPACKET *packet;
     switch (message)
     {
 	case WM_CREATE:
+		pManager = new CClientManager;
+		pManager->Init(hInst);
 		sock = InitSocket(0);
 		ConnectToServer(sock);
 		
+		packet = new RECVPACKET(sock, pManager);
+		
+		for (int i = 0; i < 5; ++i)
+			key[i] = false;
+
 		mapY = 0;
 		hBackGround = LoadBitmap(hInst, MAKEINTRESOURCE(IDB_BITMAP1));
 		SetTimer(hWnd, 0, 10, NULL);
-		CreateThread(NULL, 0, RecvThread, (LPVOID)&RECVPACKET(sock, pPos) , 0, NULL);
-		
-
-		px = 200;
-		py = 600;
+		CreateThread(NULL, 0, RecvThread, (LPVOID)packet, 0, NULL);
 			break;
     
     case WM_PAINT:
@@ -112,10 +106,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             // TODO: 여기에 memdc를 사용하는 그리기 코드를 추가합니다.
 
 			// 배경 그리기
-			DrawBackGround(memdc, hBackGround, mapY);
+			pManager->DrawBackground(memdc, mapY);
+		
+			// 오브젝트 그리기
+			pManager->DrawObejct(memdc);
 
-			DrawPlane(memdc, px, py);
-			//여기
+
+
 
 			// -- 여기까지
 			BitBlt(hdc, 0, 0, rt.right, rt.bottom, memdc, 0, 0, SRCCOPY);
@@ -124,7 +121,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			DeleteObject(hbit);
 			DeleteObject(oldbit);
             EndPaint(hWnd, &ps);
-			//DeleteObject(hdc);
         }
         break;
 	case WM_TIMER:
@@ -163,8 +159,16 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		case VK_RIGHT:
 			key[3] = true;
 			break;
+		case VK_SPACE:
+			key[4] = true;
+			break;
+			
 		}
-		CreateThread(NULL, 0, SendThread, (LPVOID)&SENDPACKET(sock, key), 0, NULL);
+		
+		SENDPACKET *SPacket = new SENDPACKET(sock, key);
+		
+		CreateThread(NULL, 0, SendThread, (LPVOID)SPacket, 0, NULL);
+
 
 	}
 		break;
@@ -184,8 +188,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		case VK_RIGHT:
 			key[3] = false;
 			break;
+		case VK_SPACE:
+			key[4] = false;
+			break;
 		}
-		CreateThread(NULL, 0, SendThread, (LPVOID)&SENDPACKET(sock, key), 0, NULL);
+		SENDPACKET *SPacket = new SENDPACKET(sock,key);
+
+		CreateThread(NULL, 0, SendThread, (LPVOID)SPacket, 0, NULL);
 
 
 	}
@@ -200,48 +209,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     return 0;
 }
 
-
-
-
-void DrawBackGround(HDC& memdc, HBITMAP& hBackGround, int& mapY)
-{
-	HDC memdc2 = CreateCompatibleDC(memdc);
-	HBITMAP oldbit2 = (HBITMAP)SelectObject(memdc2, hBackGround);
-
-	if (mapY < 0)
-	{
-		StretchBlt(memdc, 0, 0, windowSizeW, windowsizeH , memdc2, 0, 8030+ mapY, 900, 800, SRCCOPY);
-		if (mapY < -800)
-			mapY = 7230;
-	}
-
-	StretchBlt(memdc, 0, 0, windowSizeW, windowsizeH, memdc2, 0, mapY, 900, 800, SRCCOPY);
-	SelectObject(memdc2, oldbit2);
-	
-	
-	
-
-	DeleteObject(memdc2);
-	DeleteObject(oldbit2);
-}
-
-void DrawPlane(HDC memdc, int x, int y)
-{
-	HDC memdc2 = CreateCompatibleDC(memdc);
-	
-	//여긴 비행기 테스트중 테스트 완료후 이 함수에서 제거 예정
-	HBITMAP plane = LoadBitmap(hInst, MAKEINTRESOURCE(IDB_PLANE));
-	HBITMAP oldbit2 = (HBITMAP)SelectObject(memdc2, plane);
-
-	//TransparentBlt()
-	TransparentBlt(memdc, pPos.posX, pPos.posY, 50, 50, memdc2, 100, 0, 24, 33, RGB(255, 255, 255));
-	SelectObject(memdc2, oldbit2);
-	
-	DeleteObject(memdc2);
-	DeleteObject(oldbit2);
-	DeleteObject(plane);
-
-}
 
 
 
