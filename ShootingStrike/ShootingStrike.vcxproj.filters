@@ -51,6 +51,9 @@
     <ClInclude Include="userInclude.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="Bullet.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -71,6 +74,9 @@
     <ClCompile Include="Plane.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="Bullet.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="ShootingStrike.rc">
@@ -88,6 +94,9 @@
       <Filter>리소스 파일</Filter>
     </Image>
     <Image Include="Plane.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="playerBullet.bmp">
       <Filter>리소스 파일</Filter>
     </Image>
   </ItemGroup>

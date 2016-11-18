@@ -72,7 +72,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	static int px, py;
 	static SOCKET sock;
 	static bool key[5];
-
+	static HANDLE hEvent;
 	static CClientManager *pManager;
 	static RECVPACKET *packet;
     switch (message)
@@ -83,8 +83,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		sock = InitSocket(0);
 		ConnectToServer(sock);
 		
+		hEvent = CreateEvent(NULL, FALSE, TRUE, NULL);
 		packet = new RECVPACKET(sock, pManager);
-		
+		packet->hEvent = hEvent;
 		for (int i = 0; i < 5; ++i)
 			key[i] = false;
 
@@ -96,6 +97,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     
     case WM_PAINT:
         {
+		WaitForSingleObject(hEvent, INFINITE);
 			RECT rt;
 			GetClientRect(hWnd, &rt);
             PAINTSTRUCT ps;
@@ -108,9 +110,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			// 배경 그리기
 			pManager->DrawBackground(memdc, mapY);
 		
-			// 오브젝트 그리기
+		
 			pManager->DrawObejct(memdc);
-
+				
 
 
 
@@ -121,6 +123,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			DeleteObject(hbit);
 			DeleteObject(oldbit);
             EndPaint(hWnd, &ps);
+			SetEvent(hEvent);
         }
         break;
 	case WM_TIMER:
@@ -137,8 +140,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				px -= 2;
 			if (key[3])
 				px += 2;*/
-
-			InvalidateRect(hWnd, NULL, false);
+			SENDPACKET *SPacket = new SENDPACKET(sock, key);
+			CreateThread(NULL, 0, SendThread, (LPVOID)SPacket, 0, NULL);
+			//if (pManager->bEnableDraw)
+			//{
+				InvalidateRect(hWnd, NULL, false);
+				
+			//}
 			break;
 
 		}
@@ -164,11 +172,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			break;
 			
 		}
-		
-		SENDPACKET *SPacket = new SENDPACKET(sock, key);
-		
-		CreateThread(NULL, 0, SendThread, (LPVOID)SPacket, 0, NULL);
-
 
 	}
 		break;
@@ -192,10 +195,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			key[4] = false;
 			break;
 		}
-		SENDPACKET *SPacket = new SENDPACKET(sock,key);
-
-		CreateThread(NULL, 0, SendThread, (LPVOID)SPacket, 0, NULL);
-
+	
 
 	}
 	break;

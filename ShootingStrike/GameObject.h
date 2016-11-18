@@ -7,6 +7,7 @@ public:
 	CGameObject();
 	~CGameObject();
 	void SetInfo(INFO info);
+	
 protected:
 	INFO m_info;
 };

@@ -12,7 +12,7 @@ struct SENDPACKET {
 struct RECVPACKET {
 	SOCKET sock;
 	CClientManager *Manager;
-
+	HANDLE hEvent;
 	RECVPACKET(SOCKET& s, CClientManager *p) { sock = s;  Manager = p; }
 };
 
@@ -33,3 +33,6 @@ void CloseSocket(SOCKET sock);
 
 DWORD WINAPI RecvThread(LPVOID parameter);
 DWORD WINAPI SendThread(LPVOID parameter);
+
+
+BOOL CALLBACK DlgProc(HWND hDlg, UINT iMessage, WPARAM wParam, LPARAM lParam);

@@ -8,10 +8,10 @@
 
 #pragma comment(lib,"msimg32.lib")
 #pragma comment(lib, "ws2_32.lib")
-
-#ifdef _DEBUG
-#pragma comment(linker, "/entry:WinMainCRTStartup /subsystem:console") 
-#endif
+//
+//#ifdef _DEBUG
+//#pragma comment(linker, "/entry:WinMainCRTStartup /subsystem:console") 
+//#endif
 
 
 #include "targetver.h"
@@ -20,6 +20,7 @@
 // Windows 헤더 파일:
 #include <windows.h>
 #include <WinSock2.h>
+#include <CommCtrl.h>
 
 // C 런타임 헤더 파일입니다.
 #include <stdlib.h>

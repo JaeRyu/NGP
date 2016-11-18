@@ -4,7 +4,7 @@
 CObjects::CObjects()
 {
 	ZeroMemory(&m_tInfo, sizeof(INFO));
-	ZeroMemory(&m_PlayerMove, sizeof(KEYDATA));
+	m_tInfo.state = 1;
 }
 
 
@@ -13,6 +13,6 @@ CObjects::~CObjects()
 }
 void CObjects::Move(int iX, int iY)
 {
-	m_tInfo.posX -= iX;
-	m_tInfo.posY -= iY;
+	m_tInfo.posX += iX;
+	m_tInfo.posY += iY;
 }

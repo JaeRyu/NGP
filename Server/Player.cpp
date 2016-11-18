@@ -2,29 +2,35 @@
 
 CPlayer::CPlayer()
 {
-	m_tInfo.posX = 600;
-	m_tInfo.posY = 200;
+	ZeroMemory(&m_PlayerMove, sizeof(KEYDATA));
+	m_tInfo.posX = 200;
+	m_tInfo.posY = 600;
 
 }
 int CPlayer::Update(void)
 {
 
-	/*if (m_PlayerMove.key[0] == true)
+	if (m_PlayerMove.key[0] == true)
 	{
-		CObjects::Move(0, -5);
+		Move(0, -5);
 	}
+
 	if (m_PlayerMove.key[1] == true)
 	{
-		CObjects::Move(0, 5);
+		Move(0, 5);
 	}
+
 	if (m_PlayerMove.key[2] == true)
 	{
-		CObjects::Move(-5, 0);
+		Move(-5, 0);
 	}
+
 	if (m_PlayerMove.key[3] == true)
 	{
-		CObjects::Move(5, 0);
-	}*/
+		Move(5, 0);
+	}
+
+
 
 	return 0;
 }

@@ -1,6 +1,6 @@
 ﻿  main.cpp
-c:\users\user\desktop\shooting_strike_넷겜플\ngp\server\main.cpp(117): warning C4244: '=': conversion from 'WORD' to 'char', possible loss of data
-c:\users\user\desktop\shooting_strike_넷겜플\ngp\server\main.cpp(118): warning C4244: '=': conversion from 'WORD' to 'char', possible loss of data
-c:\users\user\desktop\shooting_strike_넷겜플\ngp\server\main.cpp(102): warning C4101: 'clientaddr': unreferenced local variable
-  Server.vcxproj -> C:\Users\User\Desktop\Shooting_Strike_넷겜플\NGP\Debug\Server.exe
-  Server.vcxproj -> C:\Users\User\Desktop\Shooting_Strike_넷겜플\NGP\Debug\Server.pdb (Full PDB)
+c:\users\sweetmyhome\documents\visual studio 2015\projects\shootingstrike\server\main.cpp(132): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
+c:\users\sweetmyhome\documents\visual studio 2015\projects\shootingstrike\server\main.cpp(102): warning C4101: 'buf' :참조되지 않은 지역 변수입니다.
+c:\users\sweetmyhome\documents\visual studio 2015\projects\shootingstrike\server\main.cpp(103): warning C4101: 'clientaddr' :참조되지 않은 지역 변수입니다.
+  Server.vcxproj -> C:\Users\SweetMyHome\Documents\Visual Studio 2015\Projects\ShootingStrike\Debug\Server.exe
+  Server.vcxproj -> C:\Users\SweetMyHome\Documents\Visual Studio 2015\Projects\ShootingStrike\Debug\Server.pdb (Full PDB)

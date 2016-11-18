@@ -9,3 +9,7 @@ typedef struct INFO{
 	BYTE state;
 }INFO;
 
+typedef struct BULLETINFO {
+	BYTE type;
+	INFO info;
+}IBULLET;
