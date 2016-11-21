@@ -7,6 +7,9 @@ void CClientManager::Init(HINSTANCE hInst)
 	hBackground = LoadBitmap(hInst, MAKEINTRESOURCE(IDB_BITMAP1));
 	hPlane = LoadBitmap(hInst, MAKEINTRESOURCE(IDB_PLANE));
 	hPlayerBullet = LoadBitmap(hInst, MAKEINTRESOURCE(IDB_PBULLET));
+	hEnemy[0] = LoadBitmap(hInst, MAKEINTRESOURCE(IDB_MOB1));
+	hEnemy[10] = LoadBitmap(hInst, MAKEINTRESOURCE(IDB_MOB11));
+
 }
 
 CClientManager::CClientManager()
@@ -22,18 +25,21 @@ bool CClientManager::DrawObejct(HDC hdc)
 {
 	
 	//총알 출력
-	printf("BulletSize = %d\n", vBullet.size());
+	
 	for (int p = 0; p<vBullet.size(); ++p)
 	{
-		vBullet[p];
 		vBullet[p].Draw(hdc, hPlayerBullet, oldbit);
 	}
 	
-	//적 출력
 
+	//적 출력
+	for (int p = 0; p < vEnemy.size(); ++p)
+	{
+		vEnemy[p].Draw(hdc, hEnemy[vEnemy[p].GetType()-1], oldbit);
+	}
+		
 
 	//비행기 출력
-
 	for (int p = 0; p < vPlane.size(); ++p)
 	{
 		vPlane[p].Draw(hdc, hPlane, oldbit);

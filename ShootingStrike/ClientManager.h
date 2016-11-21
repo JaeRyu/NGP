@@ -7,7 +7,7 @@ class CClientManager
 {
 	HBITMAP hPlayerBullet;
 	HBITMAP hPlane;
-	HBITMAP hEnemy;
+	HBITMAP hEnemy[11];
 	
 	HBITMAP hBackground;
 	HBITMAP oldbit;
@@ -19,6 +19,7 @@ public:
 public:
 	std::vector<CPlane> vPlane;
 	std::vector<CBullets> vBullet;
+	std::vector<CEnemy> vEnemy;
 	int m_MapY;
 public:
 	CClientManager();

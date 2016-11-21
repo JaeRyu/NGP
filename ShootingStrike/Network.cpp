@@ -97,6 +97,27 @@ DWORD WINAPI RecvThread(LPVOID parameter)
 			Manager->vPlane.push_back(cp);
 		}
 		
+
+		//적 수신
+		int Enemysize = 0;
+		retval = recv(sp.sock, (char*)&Enemysize, sizeof(int), 0);
+		Manager->vEnemy.clear();
+		OBJECTINFO eBuf;
+		for (int i = 0; i < Enemysize; ++i)
+		{
+
+			retval = recv(sp.sock, (char *)&eBuf, sizeof(OBJECTINFO), 0);
+			Manager->vEnemy.push_back(CEnemy(eBuf));
+			if (retval == SOCKET_ERROR) {
+				err_quit("recv()");
+				break;
+			}
+			else if (retval == 0)
+				break;
+		}
+
+		
+
 		//총알 수신
 		int bulletsize;
 		retval = recv(sp.sock, (char * )&bulletsize, sizeof(int),0);

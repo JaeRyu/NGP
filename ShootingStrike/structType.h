@@ -10,6 +10,7 @@ typedef struct INFO{
 }INFO;
 
 typedef struct BULLETINFO {
-	BYTE type;
+	WORD type;
 	INFO info;
-}IBULLET;
+}IBULLET, OBJECTINFO;
+
