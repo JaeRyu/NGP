@@ -1,7 +1,7 @@
 #pragma once
 typedef struct tagInfo {
-	WORD posX;
-	WORD posY;
+	short posX;
+	short posY;
 	BYTE state;
 }INFO;
 

@@ -8,6 +8,7 @@ class CBullets : public CGameObject
 	int type;
 public:
 	void setType(int tType) { type = tType; }
+	int GetType() { return type; }
 	void Draw(HDC hdc, HBITMAP hBitmap, HBITMAP oldbit);
 
 

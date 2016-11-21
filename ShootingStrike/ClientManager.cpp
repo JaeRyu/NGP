@@ -20,20 +20,23 @@ CClientManager::~CClientManager()
 
 bool CClientManager::DrawObejct(HDC hdc)
 {
-	//비행기 출력
-	//printf("PlaneSize = %d\n", vPlane.size());
-	for (int p = 0; p < vPlane.size(); ++p)
+	
+	//총알 출력
+	printf("BulletSize = %d\n", vBullet.size());
+	for (int p = 0; p<vBullet.size(); ++p)
 	{
-		vPlane[p].Draw(hdc, hPlane, oldbit);
+		vBullet[p];
+		vBullet[p].Draw(hdc, hPlayerBullet, oldbit);
 	}
 	
 	//적 출력
 
-	//총알 출력
-	printf("BulletSize = %d\n", vBullet.size());
-	for(int p = 0; p<vBullet.size(); ++p)
+
+	//비행기 출력
+
+	for (int p = 0; p < vPlane.size(); ++p)
 	{
-		vBullet[p].Draw(hdc, hPlayerBullet, oldbit);
+		vPlane[p].Draw(hdc, hPlane, oldbit);
 	}
 
 	return true;
