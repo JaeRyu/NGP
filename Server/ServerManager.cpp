@@ -9,19 +9,21 @@ void CServerManager::update(KEYDATA keyData)
 
 	int clientNum = keyData.clientNum;
 
-	vPlayer[clientNum].SetKeyData(keyData);
-	vPlayer[clientNum].Update();
+	if (clientNum != -1)
+	{
+		vPlayer[clientNum].SetKeyData(keyData);
+		vPlayer[clientNum].Update();
+	}
+	
+
 
 	std::list<CBullet>::iterator itor;
 	
-	mapY -= 1;
-	if (mapY < -800)
-		mapY = 7230;
-
 	lBullet.remove_if([](CBullet a) {
 		return a.GetInfo().state == 0;
 	});
 	
+
 
 	for(itor = lBullet.begin(); itor != lBullet.end(); ++itor)
 	{
@@ -31,6 +33,7 @@ void CServerManager::update(KEYDATA keyData)
 
 	if (keyData.key[4])
 	{
+		printf("call spacebar client: %d\n", clientNum);
 		CBullet tBullet;
 		tBullet.SetType(0);
 		INFO tInfo;
@@ -62,7 +65,7 @@ std::list<CBullet> CServerManager::GetBulletsLIst(void)
 
 int CServerManager::GetMapY(void)
 {
-	return mapY;
+	return 0;
 }
 
 
@@ -82,7 +85,6 @@ bool CServerManager::OutOfRange(CObjects& obj)
 
 CServerManager::CServerManager()
 {
-	mapY = 0;
 }
 
 

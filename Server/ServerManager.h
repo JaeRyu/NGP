@@ -10,8 +10,6 @@ class CServerManager
 	std::list<CBullet> lBullet;
 	//std::vector<> // 적 이 들어갈 콘테이너
 
-	//맵좌표
-	int mapY;
 
 	//충돌체크 함수
 	bool CirCleToCircle(INFO iA, INFO iB, int r1, int r2); // A의 좌표, B의 좌표, A의 범위, B의 범위

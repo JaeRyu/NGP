@@ -52,6 +52,9 @@ void err_display(char *msg)
 
 DWORD WINAPI SendThread(LPVOID parameter)
 {
+	int retval;
+	
+
 
 	return 0;
 }
@@ -100,12 +103,13 @@ DWORD WINAPI UpdateThread(LPVOID clientNum)
 	int addrlen;
 	int retval;
 	char buf;
+	int mapY = 0;
 	SOCKADDR clientaddr;
 
 	addrlen = sizeof(clientaddr);
 	ZeroMemory(keyData.key, sizeof(INFO));
 
-
+	DWORD stime = GetTickCount();
 
 	while (1)
 	{
@@ -113,55 +117,78 @@ DWORD WINAPI UpdateThread(LPVOID clientNum)
 		if (keyData.clientNum != -1)
 		{
 			m_Manager.update(keyData);
-			//m_Player[keyData.clientNum].SetKeyData(keyData);
-			//m_Player[keyData.clientNum].Update();
+			for(int i = 0; i<5; ++i)
+				keyData.key[i] = false;
 			keyData.clientNum = -1;
 
 			SetEvent(hUpdateHandle);
 		}
 
-		// 플레이어 전송 부분
-		std::vector<CPlayer> vPlayer = m_Manager.GetPlayers();
-		int playerSize = vPlayer.size();
-
-		//플레이어 숫자 전송
-		retval = send(client_sock[0], (char *)&playerSize, sizeof(int), 0);
-		retval = send(client_sock[1], (char *)&playerSize, sizeof(int), 0);
-
-		//플레이어 좌표 전송
-		for (int i = 0; i < vPlayer.size(); ++i)
+		DWORD etime = GetTickCount();
+		if (etime - stime > 20)
 		{
-			tInfo = vPlayer[i].GetInfo();
-			retval = send(client_sock[0], (char*)&tInfo, sizeof(INFO), 0);
-			retval = send(client_sock[1], (char*)&tInfo, sizeof(INFO), 0);
+			if (keyData.clientNum == -1)
+			{
+				KEYDATA tempKey;
+				tempKey.clientNum = -1;
+				for (int i = 0; i < 5; ++i)
+					tempKey.key[i] = false;
 
+
+				m_Manager.update(tempKey);
+			}
+
+
+			// 플레이어 전송 부분
+			std::vector<CPlayer> vPlayer = m_Manager.GetPlayers();
+			int playerSize = vPlayer.size();
+
+			//플레이어 숫자 전송
+			retval = send(client_sock[0], (char *)&playerSize, sizeof(int), 0);
+			retval = send(client_sock[1], (char *)&playerSize, sizeof(int), 0);
+
+			//플레이어 좌표 전송
+			for (int i = 0; i < vPlayer.size(); ++i)
+			{
+				tInfo = vPlayer[i].GetInfo();
+				retval = send(client_sock[0], (char*)&tInfo, sizeof(INFO), 0);
+				retval = send(client_sock[1], (char*)&tInfo, sizeof(INFO), 0);
+
+			}
+
+			//총알정보 전송 부분
+			std::list<CBullet> vBullet = m_Manager.GetBulletsLIst();
+			int bulletSize = vBullet.size();
+			printf("bulletSize = %d\n", bulletSize);
+			//총알 숫자 전송
+			retval = send(client_sock[0], (char *)&bulletSize, sizeof(int), 0);
+			retval = send(client_sock[1], (char *)&bulletSize, sizeof(int), 0);
+
+			//총알 좌표 전송
+			std::list<CBullet>::iterator itor;
+			for (itor = vBullet.begin(); itor != vBullet.end(); itor++)
+			{
+				retval = send(client_sock[0], (char *)&itor->GetBulletInfo(), sizeof(IBULLET), 0);
+				retval = send(client_sock[1], (char *)&itor->GetBulletInfo(), sizeof(IBULLET), 0);
+
+			}
+
+			//맵좌표 전송
+
+			mapY -= 5;
+			if (mapY < -800)
+				mapY = 7230;
+
+			retval = send(client_sock[0], (char *)&mapY, sizeof(int), 0);
+			retval = send(client_sock[1], (char *)&mapY, sizeof(int), 0);
+
+			stime = GetTickCount();
 		}
+		
 
-		//총알정보 전송 부분
-		std::list<CBullet> vBullet = m_Manager.GetBulletsLIst();
-		int bulletSize = vBullet.size();
-		//printf("BulletSize = %d\n", bulletSize);
-		//총알 숫자 전송
-		retval = send(client_sock[0], (char *)&bulletSize, sizeof(int), 0);
-		retval = send(client_sock[1], (char *)&bulletSize, sizeof(int), 0);
-		//총알 좌표 전송
-		std::list<CBullet>::iterator itor;
-		for (itor = vBullet.begin(); itor != vBullet.end(); itor++)
-		{
-			retval = send(client_sock[0], (char *)&itor->GetBulletInfo(), sizeof(IBULLET), 0);
-			retval = send(client_sock[1], (char *)&itor->GetBulletInfo(), sizeof(IBULLET), 0);
-
-		}
-
-		//매좌표 전송
-		int mapY = m_Manager.GetMapY();
-		retval = send(client_sock[0], (char *)&mapY, sizeof(int), 0);
-		retval = send(client_sock[1], (char *)&mapY, sizeof(int), 0);
+		
 
 	}
-
-
-
 
 	return 0;
 }

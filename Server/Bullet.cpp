@@ -4,6 +4,7 @@
 CBullet::CBullet()
 {
 	m_tInfo.state = 1;
+
 }
 
 
@@ -12,8 +13,7 @@ CBullet::~CBullet()
 }
 int CBullet::Update(void)
 {
-	Move(0, -10);
-	
+	Move(0, -5);
 	if (m_tInfo.posY < 0 || m_tInfo.posY > 850)
 			ChangeState(0);
 
