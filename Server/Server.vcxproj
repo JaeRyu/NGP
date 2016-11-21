@@ -146,6 +146,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Bullet.cpp" />
+    <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Objects.cpp" />
     <ClCompile Include="Player.cpp" />
@@ -155,6 +156,7 @@
     <ClInclude Include="Bullet.h" />
     <ClInclude Include="Const.h" />
     <ClInclude Include="Define.h" />
+    <ClInclude Include="Enemy.h" />
     <ClInclude Include="Objects.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="ServerManager.h" />

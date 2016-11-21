@@ -11,7 +11,11 @@ typedef struct KEY {
 }KEYDATA;
 
 // 클라이언트에 총알을 전송할 구좇
-typedef struct BULLETINFO {
-	BYTE type;
+typedef struct ObjectInfo {
+	WORD type;
 	INFO info;
-}IBULLET;
+}IBULLET, EnemyInfo;
+//typedef struct ENEMYINFO {
+//	BYTE type;
+//	INFO info;
+//};

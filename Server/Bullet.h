@@ -13,6 +13,10 @@ private:
 public:
 	void SetType(int tType);
 	int Update(void);
+	int GetType(void)
+	{
+		return type;
+	}
 
 
 	IBULLET GetBulletInfo(void);
