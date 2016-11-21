@@ -153,13 +153,31 @@ DWORD WINAPI UpdateThread(LPVOID clientNum)
 				tInfo = vPlayer[i].GetInfo();
 				retval = send(client_sock[0], (char*)&tInfo, sizeof(INFO), 0);
 				retval = send(client_sock[1], (char*)&tInfo, sizeof(INFO), 0);
-
 			}
+
+
+			//적 전송부분
+			std::list<CEnemy> LEnemy = m_Manager.GetMonster();
+			int MonsterSize = LEnemy.size();
+			retval = send(client_sock[0], (char *)&MonsterSize, sizeof(int), 0);
+			retval = send(client_sock[1], (char *)&MonsterSize, sizeof(int), 0);
+
+			printf("MonsterSize : %d", MonsterSize);
+			//적 좌표 전송부분
+			std::list<CEnemy>::iterator iter;
+			for (iter = LEnemy.begin(); iter != LEnemy.end(); iter++)
+			{
+				retval = send(client_sock[0], (char *)&iter->GetPos(), sizeof(EnemyInfo), 0);
+				retval = send(client_sock[1], (char *)&iter->GetPos(), sizeof(EnemyInfo), 0);
+			}
+
 
 			//총알정보 전송 부분
 			std::list<CBullet> vBullet = m_Manager.GetBulletsLIst();
 			int bulletSize = vBullet.size();
-			printf("bulletSize = %d\n", bulletSize);
+			//printf("bulletSize = %d\n", bulletSize);
+
+
 			//총알 숫자 전송
 			retval = send(client_sock[0], (char *)&bulletSize, sizeof(int), 0);
 			retval = send(client_sock[1], (char *)&bulletSize, sizeof(int), 0);

@@ -3,6 +3,7 @@
 class CPlayer :
 	public CObjects
 {
+private:
 	KEYDATA m_PlayerMove;
 public:
 	int Update(void);
