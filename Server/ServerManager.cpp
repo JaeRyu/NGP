@@ -45,6 +45,7 @@ void CServerManager::update(KEYDATA keyData)
 			{
 				if (Rect_To_Rect(iter->GetRect(), itor->GetRect()))
 				{
+					clientScore[itor->GetClient()]+=10;
 					INFO Temp = itor->GetInfo();
 					Temp.state = 0;
 					itor->SetInfo(Temp);
@@ -59,6 +60,7 @@ void CServerManager::update(KEYDATA keyData)
 		//printf("call spacebar client: %d\n", clientNum);
 		CBullet tBullet;
 		tBullet.SetType(0);
+		tBullet.SetClient(keyData.clientNum);
 		INFO tInfo;
 		tInfo.posX = vPlayer[clientNum].GetInfo().posX;
 		tInfo.posY = vPlayer[clientNum].GetInfo().posY;
@@ -73,6 +75,11 @@ void CServerManager::update(KEYDATA keyData)
 void CServerManager::AddPlayer()
 {
 	vPlayer.push_back(CPlayer());
+}
+
+int CServerManager::GetClientScore(int num)
+{
+	return clientScore[num];
 }
 
 std::vector<CPlayer> CServerManager::GetPlayers(void)
@@ -124,7 +131,7 @@ bool CServerManager::Rect_To_Rect(RECT Bullet, RECT Monster)
 	{
 		//hp 깎아주고.
 		//충돌판정이 되면.
-		cout << "충돌이 되었습니다. " << endl;
+		//cout << "충돌이 되었습니다. " << endl;
 		return true;
 	}
 	else
@@ -135,6 +142,9 @@ bool CServerManager::Rect_To_Rect(RECT Bullet, RECT Monster)
 
 CServerManager::CServerManager()
 {
+	clientScore[0] = 0;
+	clientScore[1] = 0;
+
 	CEnemy Temp(100, 150, 1);	//1번
 	CEnemy Temp2(300, 150, 11);	//11번
 

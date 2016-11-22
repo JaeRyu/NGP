@@ -11,6 +11,7 @@ class CServerManager
 	std::list<CEnemy> m_listEnemy;
 	//std::vector<> // 적 이 들어갈 콘테이너
 
+	int clientScore[2];
 
 	//충돌체크 함수
 	bool CirCleToCircle(INFO iA, INFO iB, int r1, int r2); // A의 좌표, B의 좌표, A의 범위, B의 범위
@@ -20,6 +21,8 @@ class CServerManager
 public:
 	void update(KEYDATA keyData);
 	void AddPlayer(void);
+
+	int GetClientScore(int num);
 	std::vector<CPlayer> GetPlayers(void);
 	std::list<CBullet> GetBulletsLIst(void);
 	std::list<CEnemy> GetMonster(void);

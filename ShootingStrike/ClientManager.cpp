@@ -12,6 +12,14 @@ void CClientManager::Init(HINSTANCE hInst)
 
 }
 
+void CClientManager::DrawScore(HDC hdc)
+{
+	//HDC memdc2 = CreateCompatibleDC(hdc);
+	char a[20];
+	wsprintf(a, "%d", score);
+	TextOut(hdc, 20, 400, a, strlen(a));
+}
+
 CClientManager::CClientManager()
 {
 }

@@ -13,7 +13,7 @@ CBullet::~CBullet()
 }
 int CBullet::Update(void)
 {
-	Move(0, -5);
+	Move(0, -8);
 	if (m_tInfo.posY < 0 || m_tInfo.posY > 850)
 			ChangeState(0);
 
@@ -24,6 +24,16 @@ int CBullet::Update(void)
 void CBullet::SetType(int tType)
 {
 	type = tType;
+}
+
+void CBullet::SetClient(int c)
+{
+	client = c;
+}
+
+int CBullet::GetClient()
+{
+	return client;
 }
 
 IBULLET CBullet::GetBulletInfo(void)

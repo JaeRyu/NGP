@@ -91,7 +91,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 		mapY = 0;
 		hBackGround = LoadBitmap(hInst, MAKEINTRESOURCE(IDB_BITMAP1));
-		SetTimer(hWnd, 0, 10, NULL);
+		SetTimer(hWnd, 0, 30, NULL);
 		CreateThread(NULL, 0, RecvThread, (LPVOID)packet, 0, NULL);
 			break;
     
@@ -113,7 +113,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		
 			pManager->DrawObejct(memdc);
 				
-
+			pManager->DrawScore(memdc);
 
 
 			// -- 여기까지

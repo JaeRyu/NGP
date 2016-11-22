@@ -12,22 +12,22 @@ int CPlayer::Update(void)
 
 	if (m_PlayerMove.key[0] == true)
 	{
-		Move(0, -5);
+		Move(0, -10);
 	}
 
 	if (m_PlayerMove.key[1] == true)
 	{
-		Move(0, 5);
+		Move(0, 10);
 	}
 
 	if (m_PlayerMove.key[2] == true)
 	{
-		Move(-5, 0);
+		Move(-10, 0);
 	}
 
 	if (m_PlayerMove.key[3] == true)
 	{
-		Move(5, 0);
+		Move(10, 0);
 	}
 
 

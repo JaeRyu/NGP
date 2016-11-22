@@ -11,10 +11,10 @@ public:
 	RECT GetRect(void)
 	{
 		RECT rc;
-		rc.left = m_tInfo.posX;
-		rc.right = m_tInfo.posX + 50;
-		rc.bottom = m_tInfo.posY + 50;
-		rc.top = m_tInfo.posY;
+		rc.left = m_tInfo.posX+10;
+		rc.right = m_tInfo.posX + 40;
+		rc.bottom = m_tInfo.posY + 40;
+		rc.top = m_tInfo.posY+10;
 		return rc;
 	}
 	void SetInfo(INFO tInfo)

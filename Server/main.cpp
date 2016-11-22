@@ -110,6 +110,8 @@ DWORD WINAPI UpdateThread(LPVOID clientNum)
 	ZeroMemory(keyData.key, sizeof(INFO));
 
 	DWORD stime = GetTickCount();
+	
+	DWORD updateSTime = GetTickCount();
 
 	while (1)
 	{
@@ -123,9 +125,10 @@ DWORD WINAPI UpdateThread(LPVOID clientNum)
 
 			SetEvent(hUpdateHandle);
 		}
-
-		DWORD etime = GetTickCount();
-		if (etime - stime > 20)
+		
+		
+		
+		if (GetTickCount() - updateSTime > 20)
 		{
 			if (keyData.clientNum == -1)
 			{
@@ -137,8 +140,13 @@ DWORD WINAPI UpdateThread(LPVOID clientNum)
 
 				m_Manager.update(tempKey);
 			}
+			updateSTime = GetTickCount();
+		}
 
 
+		if (GetTickCount() - stime > 30)
+		{
+			
 			// 플레이어 전송 부분
 			std::vector<CPlayer> vPlayer = m_Manager.GetPlayers();
 			int playerSize = vPlayer.size();
@@ -162,7 +170,7 @@ DWORD WINAPI UpdateThread(LPVOID clientNum)
 			retval = send(client_sock[0], (char *)&MonsterSize, sizeof(int), 0);
 			retval = send(client_sock[1], (char *)&MonsterSize, sizeof(int), 0);
 
-			printf("MonsterSize : %d", MonsterSize);
+			//printf("MonsterSize : %d", MonsterSize);
 			//적 좌표 전송부분
 			std::list<CEnemy>::iterator iter;
 			for (iter = LEnemy.begin(); iter != LEnemy.end(); iter++)
@@ -171,7 +179,7 @@ DWORD WINAPI UpdateThread(LPVOID clientNum)
 				retval = send(client_sock[1], (char *)&iter->GetPos(), sizeof(EnemyInfo), 0);
 			}
 
-
+			
 			//총알정보 전송 부분
 			std::list<CBullet> vBullet = m_Manager.GetBulletsLIst();
 			int bulletSize = vBullet.size();
@@ -191,6 +199,13 @@ DWORD WINAPI UpdateThread(LPVOID clientNum)
 
 			}
 
+			//점수전송
+			int tScore = m_Manager.GetClientScore(0);
+			retval = send(client_sock[0], (char *)&tScore, sizeof(int), 0);
+			tScore = m_Manager.GetClientScore(1);;
+			retval = send(client_sock[1], (char *)&tScore, sizeof(int), 0);
+
+
 			//맵좌표 전송
 
 			mapY -= 5;
@@ -201,6 +216,8 @@ DWORD WINAPI UpdateThread(LPVOID clientNum)
 			retval = send(client_sock[1], (char *)&mapY, sizeof(int), 0);
 
 			stime = GetTickCount();
+
+
 		}
 		
 

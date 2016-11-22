@@ -1,4 +1,5 @@
-﻿  Network.cpp
-c:\users\sweetmyhome\documents\visual studio 2015\projects\shootingstrike\shootingstrike\network.cpp(74): warning C4101: 'len' :참조되지 않은 지역 변수입니다.
-  ShootingStrike.vcxproj -> C:\Users\SweetMyHome\Documents\Visual Studio 2015\Projects\ShootingStrike\Debug\ShootingStrike.exe
-  ShootingStrike.vcxproj -> C:\Users\SweetMyHome\Documents\Visual Studio 2015\Projects\ShootingStrike\Debug\ShootingStrike.pdb (Full PDB)
+﻿  ClientManager.cpp
+c:\users\ujwon\documents\ngp\ngp\shootingstrike\clientmanager.cpp(37): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
+c:\users\ujwon\documents\ngp\ngp\shootingstrike\clientmanager.cpp(44): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
+c:\users\ujwon\documents\ngp\ngp\shootingstrike\clientmanager.cpp(51): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
+  ShootingStrike.vcxproj -> C:\Users\ujwon\Documents\NGP\NGP\Debug\ShootingStrike.exe

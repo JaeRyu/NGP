@@ -130,6 +130,11 @@ DWORD WINAPI RecvThread(LPVOID parameter)
 			Manager->vBullet.push_back(CBullets(buf));
 		}
 
+		//점수 수신
+		int score = 0;
+		retval = recv(sp.sock, (char *)&score, sizeof(int), 0);
+		Manager->SetScore(score);
+
 		// 맵좌표 수신
 		int mapY;
 		retval = recv(sp.sock, (char *)&mapY, sizeof(int), 0);

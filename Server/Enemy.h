@@ -17,17 +17,17 @@ public:
 		RECT rc;
 		if (iType < 10)
 		{
-			rc.left = m_tInfo.posX;
-			rc.right = m_tInfo.posX + 50;
-			rc.bottom = m_tInfo.posY + 50;
-			rc.top = m_tInfo.posY;
+			rc.left = m_tInfo.posX+10;
+			rc.right = m_tInfo.posX + 40;
+			rc.bottom = m_tInfo.posY + 40;
+			rc.top = m_tInfo.posY+10;
 		}
 		else
 		{
-			rc.left = m_tInfo.posX;
-			rc.right = m_tInfo.posX + 100;
-			rc.bottom = m_tInfo.posY + 100;
-			rc.top = m_tInfo.posY;
+			rc.left = m_tInfo.posX+20;
+			rc.right = m_tInfo.posX + 80;
+			rc.bottom = m_tInfo.posY + 80;
+			rc.top = m_tInfo.posY+20;
 		}
 		
 		return rc;
