@@ -3,7 +3,7 @@
 #include"userInclude.h"
 
 
-class CEnemy : CGameObject
+class CEnemy : public CGameObject
 {
 	/*Àâ¸÷ : 1~9, º¸¼ö : 11~ */
 	int type;

@@ -111,5 +111,11 @@
     <Image Include="Boss1.bmp">
       <Filter>리소스 파일</Filter>
     </Image>
+    <Image Include="enemyBullet.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="explosion.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
   </ItemGroup>
 </Project>

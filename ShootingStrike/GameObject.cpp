@@ -13,3 +13,8 @@ void CGameObject::SetInfo(INFO info)
 {
 	m_info = info;
 }
+
+INFO CGameObject::GetInfo()
+{
+	return m_info;
+}

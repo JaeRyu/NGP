@@ -175,6 +175,8 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="Boss1.bmp" />
+    <Image Include="enemyBullet.bmp" />
+    <Image Include="explosion.bmp" />
     <Image Include="Mob1.bmp" />
     <Image Include="Plane.bmp" />
     <Image Include="playerBullet.bmp" />

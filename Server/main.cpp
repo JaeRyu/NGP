@@ -53,6 +53,74 @@ void err_display(char *msg)
 DWORD WINAPI SendThread(LPVOID parameter)
 {
 	int retval;
+
+	// 플레이어 전송 부분
+	std::vector<CPlayer> vPlayer = m_Manager.GetPlayers();
+	int playerSize = vPlayer.size();
+
+	//플레이어 숫자 전송
+	retval = send(client_sock[0], (char *)&playerSize, sizeof(int), 0);
+	retval = send(client_sock[1], (char *)&playerSize, sizeof(int), 0);
+
+	//플레이어 좌표 전송
+	for (int i = 0; i < vPlayer.size(); ++i)
+	{
+		tInfo = vPlayer[i].GetInfo();
+		retval = send(client_sock[0], (char*)&tInfo, sizeof(INFO), 0);
+		retval = send(client_sock[1], (char*)&tInfo, sizeof(INFO), 0);
+	}
+
+
+	//적 전송부분
+	std::list<CEnemy> LEnemy = m_Manager.GetMonster();
+	int MonsterSize = LEnemy.size();
+	//printf("MonsterSize = %d \d", MonsterSize);
+	retval = send(client_sock[0], (char *)&MonsterSize, sizeof(int), 0);
+	retval = send(client_sock[1], (char *)&MonsterSize, sizeof(int), 0);
+
+	//printf("MonsterSize : %d", MonsterSize);
+	//적 좌표 전송부분
+	std::list<CEnemy>::iterator iter;
+	for (iter = LEnemy.begin(); iter != LEnemy.end(); iter++)
+	{
+		retval = send(client_sock[0], (char *)&iter->GetPos(), sizeof(EnemyInfo), 0);
+		retval = send(client_sock[1], (char *)&iter->GetPos(), sizeof(EnemyInfo), 0);
+	}
+	m_Manager.EnemyZeroTo(2);
+
+
+	//총알정보 전송 부분
+	std::list<CBullet> vBullet = m_Manager.GetBulletsLIst();
+	int bulletSize = vBullet.size();
+	//printf("bulletSize = %d\n", bulletSize);
+
+
+	//총알 숫자 전송
+	retval = send(client_sock[0], (char *)&bulletSize, sizeof(int), 0);
+	retval = send(client_sock[1], (char *)&bulletSize, sizeof(int), 0);
+
+	//총알 좌표 전송
+	std::list<CBullet>::iterator itor;
+	for (itor = vBullet.begin(); itor != vBullet.end(); itor++)
+	{
+		retval = send(client_sock[0], (char *)&itor->GetBulletInfo(), sizeof(IBULLET), 0);
+		retval = send(client_sock[1], (char *)&itor->GetBulletInfo(), sizeof(IBULLET), 0);
+
+	}
+
+	//점수전송
+	int tScore = m_Manager.GetClientScore(0);
+	retval = send(client_sock[0], (char *)&tScore, sizeof(int), 0);
+	tScore = m_Manager.GetClientScore(1);;
+	retval = send(client_sock[1], (char *)&tScore, sizeof(int), 0);
+
+
+	//맵좌표 전송
+	int mapY = *(int *)parameter;
+
+	retval = send(client_sock[0], (char *)&mapY, sizeof(int), 0);
+	retval = send(client_sock[1], (char *)&mapY, sizeof(int), 0);
+
 	
 
 
@@ -146,78 +214,11 @@ DWORD WINAPI UpdateThread(LPVOID clientNum)
 
 		if (GetTickCount() - stime > 30)
 		{
-			
-			// 플레이어 전송 부분
-			std::vector<CPlayer> vPlayer = m_Manager.GetPlayers();
-			int playerSize = vPlayer.size();
-
-			//플레이어 숫자 전송
-			retval = send(client_sock[0], (char *)&playerSize, sizeof(int), 0);
-			retval = send(client_sock[1], (char *)&playerSize, sizeof(int), 0);
-
-			//플레이어 좌표 전송
-			for (int i = 0; i < vPlayer.size(); ++i)
-			{
-				tInfo = vPlayer[i].GetInfo();
-				retval = send(client_sock[0], (char*)&tInfo, sizeof(INFO), 0);
-				retval = send(client_sock[1], (char*)&tInfo, sizeof(INFO), 0);
-			}
-
-
-			//적 전송부분
-			std::list<CEnemy> LEnemy = m_Manager.GetMonster();
-			int MonsterSize = LEnemy.size();
-			retval = send(client_sock[0], (char *)&MonsterSize, sizeof(int), 0);
-			retval = send(client_sock[1], (char *)&MonsterSize, sizeof(int), 0);
-
-			//printf("MonsterSize : %d", MonsterSize);
-			//적 좌표 전송부분
-			std::list<CEnemy>::iterator iter;
-			for (iter = LEnemy.begin(); iter != LEnemy.end(); iter++)
-			{
-				retval = send(client_sock[0], (char *)&iter->GetPos(), sizeof(EnemyInfo), 0);
-				retval = send(client_sock[1], (char *)&iter->GetPos(), sizeof(EnemyInfo), 0);
-			}
-
-			
-			//총알정보 전송 부분
-			std::list<CBullet> vBullet = m_Manager.GetBulletsLIst();
-			int bulletSize = vBullet.size();
-			//printf("bulletSize = %d\n", bulletSize);
-
-
-			//총알 숫자 전송
-			retval = send(client_sock[0], (char *)&bulletSize, sizeof(int), 0);
-			retval = send(client_sock[1], (char *)&bulletSize, sizeof(int), 0);
-
-			//총알 좌표 전송
-			std::list<CBullet>::iterator itor;
-			for (itor = vBullet.begin(); itor != vBullet.end(); itor++)
-			{
-				retval = send(client_sock[0], (char *)&itor->GetBulletInfo(), sizeof(IBULLET), 0);
-				retval = send(client_sock[1], (char *)&itor->GetBulletInfo(), sizeof(IBULLET), 0);
-
-			}
-
-			//점수전송
-			int tScore = m_Manager.GetClientScore(0);
-			retval = send(client_sock[0], (char *)&tScore, sizeof(int), 0);
-			tScore = m_Manager.GetClientScore(1);;
-			retval = send(client_sock[1], (char *)&tScore, sizeof(int), 0);
-
-
-			//맵좌표 전송
-
+			CreateThread(NULL, 0, SendThread, (LPVOID)&mapY, 0, NULL);
 			mapY -= 5;
 			if (mapY < -800)
 				mapY = 7230;
-
-			retval = send(client_sock[0], (char *)&mapY, sizeof(int), 0);
-			retval = send(client_sock[1], (char *)&mapY, sizeof(int), 0);
-
 			stime = GetTickCount();
-
-
 		}
 		
 

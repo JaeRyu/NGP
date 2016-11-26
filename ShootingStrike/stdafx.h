@@ -28,6 +28,7 @@
 #include <memory.h>
 #include <tchar.h>
 #include <vector>
+#include <list>
 
 #include"userInclude.h"
 

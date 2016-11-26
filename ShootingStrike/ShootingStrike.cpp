@@ -92,6 +92,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		mapY = 0;
 		hBackGround = LoadBitmap(hInst, MAKEINTRESOURCE(IDB_BITMAP1));
 		SetTimer(hWnd, 0, 30, NULL);
+		SetTimer(hWnd, 1, 50, NULL);
 		CreateThread(NULL, 0, RecvThread, (LPVOID)packet, 0, NULL);
 			break;
     
@@ -130,25 +131,16 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		switch (wParam)
 		{
 		case 0 :
-			mapY -= 5;
-
-			/*if (key[0])
-				py -= 2;
-			if (key[1])
-				py += 2;
-			if (key[2])
-				px -= 2;
-			if (key[3])
-				px += 2;*/
+		{
 			SENDPACKET *SPacket = new SENDPACKET(sock, key);
 			CreateThread(NULL, 0, SendThread, (LPVOID)SPacket, 0, NULL);
-			//if (pManager->bEnableDraw)
-			//{
-				InvalidateRect(hWnd, NULL, false);
-				
-			//}
+			InvalidateRect(hWnd, NULL, false);
+		}			
 			break;
-
+		case 1:
+			pManager->UpdateDummy();
+			InvalidateRect(hWnd, NULL, false);
+			break;
 		}
 		break;
 	case WM_KEYDOWN:

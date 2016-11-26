@@ -7,9 +7,10 @@ void CClientManager::Init(HINSTANCE hInst)
 	hBackground = LoadBitmap(hInst, MAKEINTRESOURCE(IDB_BITMAP1));
 	hPlane = LoadBitmap(hInst, MAKEINTRESOURCE(IDB_PLANE));
 	hPlayerBullet = LoadBitmap(hInst, MAKEINTRESOURCE(IDB_PBULLET));
+	hEnemyBullet = LoadBitmap(hInst, MAKEINTRESOURCE(IDB_EBULLET));
 	hEnemy[0] = LoadBitmap(hInst, MAKEINTRESOURCE(IDB_MOB1));
 	hEnemy[10] = LoadBitmap(hInst, MAKEINTRESOURCE(IDB_MOB11));
-
+	hExplosion = LoadBitmap(hInst, MAKEINTRESOURCE(IDB_EXPLOS));
 }
 
 void CClientManager::DrawScore(HDC hdc)
@@ -18,6 +19,30 @@ void CClientManager::DrawScore(HDC hdc)
 	char a[20];
 	wsprintf(a, "%d", score);
 	TextOut(hdc, 20, 400, a, strlen(a));
+}
+
+void CClientManager::DrawDummy(HDC hdc)
+{
+
+	// 폭발 출력
+	for (std::list<DESTROYED>::iterator p = vDestroy.begin(); p != vDestroy.end(); ++p)
+	{
+		p->Draw(hdc, hExplosion, oldbit);
+	}
+
+	vDestroy.remove_if([](DESTROYED a)
+	{
+		return a.animNum > 11;
+	}
+	);
+}
+
+void CClientManager::UpdateDummy()
+{
+	for (std::list<DESTROYED>::iterator p = vDestroy.begin(); p != vDestroy.end(); ++p)
+	{
+		p->animNum += 1;
+	}
 }
 
 CClientManager::CClientManager()
@@ -33,16 +58,24 @@ bool CClientManager::DrawObejct(HDC hdc)
 {
 	
 	//총알 출력
-	
 	for (int p = 0; p<vBullet.size(); ++p)
 	{
-		vBullet[p].Draw(hdc, hPlayerBullet, oldbit);
+		vBullet[p].Draw(hdc, hPlayerBullet, hEnemyBullet, oldbit);
+	
 	}
 	
 
 	//적 출력
 	for (int p = 0; p < vEnemy.size(); ++p)
 	{
+		if (vEnemy[p].GetInfo().state == 0)
+		{
+			DESTROYED d;
+			d.info = vEnemy[p].GetInfo();
+			d.animNum = 0;
+			vDestroy.push_back(d);
+		}
+		else
 		vEnemy[p].Draw(hdc, hEnemy[vEnemy[p].GetType()-1], oldbit);
 	}
 		
@@ -53,8 +86,11 @@ bool CClientManager::DrawObejct(HDC hdc)
 		vPlane[p].Draw(hdc, hPlane, oldbit);
 	}
 
+	DrawDummy(hdc);
 	return true;
 }
+
+
 
 bool CClientManager::DrawBackground(HDC hdc, int& mapY)
 {

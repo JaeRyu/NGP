@@ -4,7 +4,6 @@
 CBullet::CBullet()
 {
 	m_tInfo.state = 1;
-
 }
 
 
@@ -13,11 +12,10 @@ CBullet::~CBullet()
 }
 int CBullet::Update(void)
 {
-	Move(0, -8);
+	Move(m_dx, m_dy);
 	if (m_tInfo.posY < 0 || m_tInfo.posY > 850)
 			ChangeState(0);
 
-	
 	return 0;
 }
 
@@ -36,6 +34,18 @@ int CBullet::GetClient()
 	return client;
 }
 
+void CBullet::SetVector(int dx, int dy)
+{
+	m_dx = dx;
+	m_dy = dy;
+}
+
+
+int CBullet::GetType(void)
+{
+	return type;
+}
+
 IBULLET CBullet::GetBulletInfo(void)
 {
 	IBULLET tinfo;
@@ -44,6 +54,8 @@ IBULLET CBullet::GetBulletInfo(void)
 
 	return tinfo;
 }
+
+
 
 void CBullet::Initialize(void)
 {

@@ -6,32 +6,23 @@ class CEnemy :
 private:
 	int iType;
 	int iHp;
-	INFO m_tInfo;
-	
+
+	int m_dx, m_dy;
+	DWORD dTime;
+
+	int shootRate; // ÃÑ¾Ë ¹ß»ç µô·¹ÀÌ
+
 public:
-	//void Initialize(void);
 	int Update(void);
+	int SetVector(int dx, int dy);
 	EnemyInfo GetPos(void);
-	RECT GetRect(void)
-	{
-		RECT rc;
-		if (iType < 10)
-		{
-			rc.left = m_tInfo.posX+10;
-			rc.right = m_tInfo.posX + 40;
-			rc.bottom = m_tInfo.posY + 40;
-			rc.top = m_tInfo.posY+10;
-		}
-		else
-		{
-			rc.left = m_tInfo.posX+20;
-			rc.right = m_tInfo.posX + 80;
-			rc.bottom = m_tInfo.posY + 80;
-			rc.top = m_tInfo.posY+20;
-		}
-		
-		return rc;
-	}
+	RECT GetRect(void);
+	DWORD GetTime();
+	void SetTimeZero();
+	void SetShootRate(int p);
+	int GetShootRate();
+	void HitDamage(int damage);
+
 public:
 
 	CEnemy(short posX, short posY, int Type);
