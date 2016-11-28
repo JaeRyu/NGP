@@ -18,6 +18,20 @@ int CEnemy::Update(void)
 			ChangeState(0);
 	}
 
+	if (iType > 10)
+	{
+		if (m_dy > 0)
+		{
+			if (m_tInfo.posY > 350)
+				m_dy *= -1;
+		}
+
+		if (m_dy < 0)
+		{
+			if (m_tInfo.posY < 100)
+				m_dy *= -1;
+		}
+	}
 	
 
 	return 0;
@@ -88,7 +102,10 @@ CEnemy::CEnemy(short posX, short posY, int Type)
 {
 	shootRate = 1000;
 	iType = Type;
-	iHp = 5;
+	if (iType < 10)
+		iHp = 5;
+	else
+		iHp = 100;
 	m_tInfo.state = 1;
 	m_tInfo.posX = posX;
 	m_tInfo.posY = posY;

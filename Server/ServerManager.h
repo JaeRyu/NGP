@@ -33,7 +33,7 @@ class CServerManager
 public:
 	void update(KEYDATA keyData);
 	void AddPlayer(void);
-
+	void SetPlayTime();
 	void EnemyZeroTo(int n);
 	int GetClientScore(int num);
 	std::vector<CPlayer> GetPlayers(void);

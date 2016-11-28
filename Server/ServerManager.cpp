@@ -86,7 +86,7 @@ void CServerManager::update(KEYDATA keyData)
 	{
 		iter->Update();
 
-		if (iter->GetPos().type > 10 && iter->GetTime() > iter->GetShootRate()) 
+		if (iter->GetPos().type > 10 && iter->GetTime() > 4000) 
 		{
 			CBullet tBullet;
 			tBullet.SetType(1);
@@ -140,6 +140,11 @@ void CServerManager::update(KEYDATA keyData)
 void CServerManager::AddPlayer()
 {
 	vPlayer.push_back(CPlayer());
+}
+
+void CServerManager::SetPlayTime()
+{
+	dPlayTime = GetTickCount();
 }
 
 void CServerManager::EnemyZeroTo(int n)

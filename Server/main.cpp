@@ -180,7 +180,7 @@ DWORD WINAPI UpdateThread(LPVOID clientNum)
 	DWORD stime = GetTickCount();
 	
 	DWORD updateSTime = GetTickCount();
-
+	m_Manager.SetPlayTime();
 	while (1)
 	{
 		//update()들 돌리는 연산을 해주자.
