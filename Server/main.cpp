@@ -13,7 +13,7 @@
 
 
 INFO tInfo;
-
+bool sendEvent;
 KEYDATA keyData;
 SOCKET client_sock[2];
 CPlayer m_Player[2];
@@ -53,7 +53,7 @@ void err_display(char *msg)
 DWORD WINAPI SendThread(LPVOID parameter)
 {
 	int retval;
-
+	sendEvent = true;
 	// 플레이어 전송 부분
 	std::vector<CPlayer> vPlayer = m_Manager.GetPlayers();
 	int playerSize = vPlayer.size();
@@ -120,10 +120,7 @@ DWORD WINAPI SendThread(LPVOID parameter)
 
 	retval = send(client_sock[0], (char *)&mapY, sizeof(int), 0);
 	retval = send(client_sock[1], (char *)&mapY, sizeof(int), 0);
-
-	
-
-
+	sendEvent = false;
 	return 0;
 }
 
@@ -158,9 +155,6 @@ DWORD WINAPI RecvThread(LPVOID clientNum)	//키값 받는 스레드
 			keyData.key[i] = buf[i];		//업 0, 다운 1, 레프트 2 , 라이트 3, 스페이스 4
 		}
 	}
-
-
-
 	return 0;
 }
 
@@ -204,15 +198,13 @@ DWORD WINAPI UpdateThread(LPVOID clientNum)
 				tempKey.clientNum = -1;
 				for (int i = 0; i < 5; ++i)
 					tempKey.key[i] = false;
-
-
 				m_Manager.update(tempKey);
 			}
 			updateSTime = GetTickCount();
 		}
 
 
-		if (GetTickCount() - stime > 30)
+		if (GetTickCount() - stime > 30 && sendEvent==false)
 		{
 			CreateThread(NULL, 0, SendThread, (LPVOID)&mapY, 0, NULL);
 			mapY -= 5;
@@ -220,10 +212,6 @@ DWORD WINAPI UpdateThread(LPVOID clientNum)
 				mapY = 7230;
 			stime = GetTickCount();
 		}
-		
-
-		
-
 	}
 
 	return 0;
@@ -276,7 +264,6 @@ int main()
 		// accept()
 		addrlen = sizeof(clientaddr);
 		client_sock[clientSize] = accept(listen_sock, (SOCKADDR *)&clientaddr, &addrlen);
-
 
 		hThread = CreateThread(NULL, 0, RecvThread, (LPVOID)clientSize, 0, NULL);
 		if (hThread == NULL)
