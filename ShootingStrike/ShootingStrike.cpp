@@ -91,8 +91,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 		mapY = 0;
 		hBackGround = LoadBitmap(hInst, MAKEINTRESOURCE(IDB_BITMAP1));
-		SetTimer(hWnd, 0, 20, NULL);
-		SetTimer(hWnd, 1, 50, NULL);
+		SetTimer(hWnd, 0, 20, NULL); // 화면 갱신
+		SetTimer(hWnd, 2, 10, NULL); // 보내기
+		SetTimer(hWnd, 1, 50, NULL); // 애니메이션
 		CreateThread(NULL, 0, RecvThread, (LPVOID)packet, 0, NULL);
 			break;
     
@@ -132,8 +133,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		{
 		case 0 :
 		{
-			SENDPACKET *SPacket = new SENDPACKET(sock, key);
-			CreateThread(NULL, 0, SendThread, (LPVOID)SPacket, 0, NULL);
 			InvalidateRect(hWnd, NULL, false);
 		}			
 			break;
@@ -141,6 +140,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			pManager->UpdateDummy();
 			InvalidateRect(hWnd, NULL, false);
 			break;
+		case 2:
+		{
+			SENDPACKET *SPacket = new SENDPACKET(sock, key);
+			CreateThread(NULL, 0, SendThread, (LPVOID)SPacket, 0, NULL);
+		}
 		}
 		break;
 	case WM_KEYDOWN:

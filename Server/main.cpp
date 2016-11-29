@@ -204,7 +204,7 @@ DWORD WINAPI UpdateThread(LPVOID clientNum)
 		}
 
 
-		if (GetTickCount() - stime > 30 && sendEvent==false)
+		if (GetTickCount() - stime > 40 && sendEvent==false)
 		{
 			CreateThread(NULL, 0, SendThread, (LPVOID)&mapY, 0, NULL);
 			mapY -= 5;
