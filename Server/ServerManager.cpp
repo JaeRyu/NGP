@@ -102,6 +102,20 @@ void CServerManager::Update()
 				}
 			}
 		}
+		if (iType == 1)
+		{
+			for (int i = 0; i < vPlayer.size(); ++i)
+			{
+				if (Rect_To_Rect(vPlayer[i].GetRect(), itor->GetRect()))
+				{
+					INFO Temp = itor->GetInfo();
+					Temp.state = 0;
+					itor->SetInfo(Temp);
+
+					clientScore[i] = 0;
+				}
+			}
+		}
 	}
 	
 	for (iter = m_listEnemy.begin(); iter != m_listEnemy.end(); ++iter) // ÃÑ¾Ë Åº¸· ¿¬»ê
