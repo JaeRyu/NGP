@@ -55,6 +55,13 @@ DWORD WINAPI SendThread(LPVOID parameter)
 	CServerManager sManager = m_Manager;
 	int retval;
 	sendEvent = true;
+
+	//게임 상태 전송
+	int GameState = 1;
+
+	retval = send(client_sock[0], (char *)&GameState, sizeof(int), 0);
+	retval = send(client_sock[1], (char *)&GameState, sizeof(int), 0);
+
 	// 플레이어 전송 부분
 	std::vector<CPlayer> vPlayer = sManager.GetPlayers();
 	int playerSize = vPlayer.size();

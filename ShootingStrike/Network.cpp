@@ -72,22 +72,26 @@ DWORD WINAPI RecvThread(LPVOID parameter)
 	int retval;
 	INFO buf;
 	int len;
+	int GameState;
 	while (1) {
 		
 		WaitForSingleObject(hEvent,INFINITE);
 		// 데이터 받기
 
+
+
 		// 게임 상태 받기
 		// 0 : 대기 상태
 		// 1 : 게임 진행중
 		// 2 : 게임 엔드
-
-
+		retval = recv(sp.sock, (char *)&GameState, sizeof(int), 0);
+		Manager->ChangeGameState(GameState);
 
 		//플레이어 수신
 		int playersize = 0;
 
 		retval = recv(sp.sock, (char*)&playersize, sizeof(int), 0);
+		
 		Manager->vPlane.clear();
 		for (int i = 0; i < playersize; ++i)
 		{
@@ -146,6 +150,7 @@ DWORD WINAPI RecvThread(LPVOID parameter)
 		int mapY;
 		retval = recv(sp.sock, (char *)&mapY, sizeof(int), 0);
 		Manager->m_MapY = mapY;
+
 
 
 		SetEvent(hEvent);

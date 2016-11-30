@@ -114,17 +114,29 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     
     case WM_PAINT:
         {
-		WaitForSingleObject(hEvent, INFINITE);
+		//printf("GameState : %d\n", pManager->GetGameState());
+		if (pManager->GetGameState() == 0)
+		{
+			PAINTSTRUCT ps;
+			HDC hdc = BeginPaint(hWnd, &ps);
+			char *ch = "다른 플레이어를 기다리는 중 입니다.";
+			TextOut(hdc, 40, 400, ch, strlen(ch));
+		}
+		else if(pManager->GetGameState() == 1)
+		{
+			//printf("Draw Objects\n");
+
+			WaitForSingleObject(hEvent, INFINITE);
 			RECT rt;
 			GetClientRect(hWnd, &rt);
-            PAINTSTRUCT ps;
-            HDC hdc = BeginPaint(hWnd, &ps);
+			PAINTSTRUCT ps;
+			HDC hdc = BeginPaint(hWnd, &ps);
 			HDC memdc = CreateCompatibleDC(hdc);
 			HBITMAP oldbit, hbit = CreateCompatibleBitmap(hdc, rt.right, rt.bottom);
 			oldbit = (HBITMAP)SelectObject(memdc, hbit);
 			SetBkMode(memdc, TRANSPARENT);
 			SetTextColor(memdc, RGB(0, 255, 255));
-            // TODO: 여기에 memdc를 사용하는 그리기 코드를 추가합니다.
+			// TODO: 여기에 memdc를 사용하는 그리기 코드를 추가합니다.
 
 
 			// 배경 그리기
@@ -139,8 +151,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			DeleteObject(memdc);
 			DeleteObject(hbit);
 			DeleteObject(oldbit);
-            EndPaint(hWnd, &ps);
+			EndPaint(hWnd, &ps);
 			SetEvent(hEvent);
+		}
+
         }
         break;
 	case WM_TIMER:
