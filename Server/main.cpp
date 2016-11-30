@@ -52,10 +52,11 @@ void err_display(char *msg)
 
 DWORD WINAPI SendThread(LPVOID parameter)
 {
+	CServerManager sManager = m_Manager;
 	int retval;
 	sendEvent = true;
 	// 플레이어 전송 부분
-	std::vector<CPlayer> vPlayer = m_Manager.GetPlayers();
+	std::vector<CPlayer> vPlayer = sManager.GetPlayers();
 	int playerSize = vPlayer.size();
 
 	//플레이어 숫자 전송
@@ -72,7 +73,7 @@ DWORD WINAPI SendThread(LPVOID parameter)
 
 
 	//적 전송부분
-	std::list<CEnemy> LEnemy = m_Manager.GetMonster();
+	std::list<CEnemy> LEnemy = sManager.GetMonster();
 	int MonsterSize = LEnemy.size();
 	//printf("MonsterSize = %d \d", MonsterSize);
 	retval = send(client_sock[0], (char *)&MonsterSize, sizeof(int), 0);
@@ -90,7 +91,7 @@ DWORD WINAPI SendThread(LPVOID parameter)
 
 
 	//총알정보 전송 부분
-	std::list<CBullet> vBullet = m_Manager.GetBulletsLIst();
+	std::list<CBullet> vBullet = sManager.GetBulletsLIst();
 	int bulletSize = vBullet.size();
 	//printf("bulletSize = %d\n", bulletSize);
 
@@ -109,9 +110,9 @@ DWORD WINAPI SendThread(LPVOID parameter)
 	}
 
 	//점수전송
-	int tScore = m_Manager.GetClientScore(0);
+	int tScore = sManager.GetClientScore(0);
 	retval = send(client_sock[0], (char *)&tScore, sizeof(int), 0);
-	tScore = m_Manager.GetClientScore(1);;
+	tScore = sManager.GetClientScore(1);;
 	retval = send(client_sock[1], (char *)&tScore, sizeof(int), 0);
 
 
@@ -154,6 +155,7 @@ DWORD WINAPI RecvThread(LPVOID clientNum)	//키값 받는 스레드
 		{
 			keyData.key[i] = buf[i];		//업 0, 다운 1, 레프트 2 , 라이트 3, 스페이스 4
 		}
+
 	}
 	return 0;
 }
@@ -177,33 +179,25 @@ DWORD WINAPI UpdateThread(LPVOID clientNum)
 	m_Manager.SetPlayTime();
 	while (1)
 	{
-		//update()들 돌리는 연산을 해주자.
+		//플레이어 업데이트
 		if (keyData.clientNum != -1)
 		{
-			m_Manager.update(keyData);
+			m_Manager.SetKeyData(keyData);
+			//m_Manager.UpdatePlayer(keyData);
 			for(int i = 0; i<5; ++i)
 				keyData.key[i] = false;
 			keyData.clientNum = -1;
-
 			SetEvent(hUpdateHandle);
 		}
 		
-		
-		
-		if (GetTickCount() - updateSTime > 20)
+		//오브젝트 업데이트
+		if (GetTickCount() - updateSTime > 10)
 		{
-			if (keyData.clientNum == -1)
-			{
-				KEYDATA tempKey;
-				tempKey.clientNum = -1;
-				for (int i = 0; i < 5; ++i)
-					tempKey.key[i] = false;
-				m_Manager.update(tempKey);
-			}
+			m_Manager.Update();
 			updateSTime = GetTickCount();
 		}
 
-
+		//Send 호출
 		if (GetTickCount() - stime > 40 && sendEvent==false)
 		{
 			CreateThread(NULL, 0, SendThread, (LPVOID)&mapY, 0, NULL);
@@ -264,7 +258,7 @@ int main()
 		// accept()
 		addrlen = sizeof(clientaddr);
 		client_sock[clientSize] = accept(listen_sock, (SOCKADDR *)&clientaddr, &addrlen);
-
+		printf("%s 접속\n", inet_ntoa(clientaddr.sin_addr));
 		hThread = CreateThread(NULL, 0, RecvThread, (LPVOID)clientSize, 0, NULL);
 		if (hThread == NULL)
 			printf("리시브 스레드 생성 실패");

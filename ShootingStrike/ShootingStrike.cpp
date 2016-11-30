@@ -16,7 +16,20 @@ INFO pPos;
 
 LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
 
-
+DWORD WINAPI ReDrawWnd(LPVOID param)
+{
+	HWND hWnd = (HWND)param;
+	DWORD mTime = GetTickCount();
+	while (true)
+	{
+		if (GetTickCount() - mTime > 20)
+		{
+			InvalidateRect(hWnd, NULL, false);
+			mTime = GetTickCount();
+		}
+	}
+	return 0;
+}
 
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
@@ -91,8 +104,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 		mapY = 0;
 		hBackGround = LoadBitmap(hInst, MAKEINTRESOURCE(IDB_BITMAP1));
-		SetTimer(hWnd, 0, 20, NULL); // 화면 갱신
-		SetTimer(hWnd, 2, 10, NULL); // 보내기
+		//SetTimer(hWnd, 0, 20, NULL); // 화면 갱신
+		CreateThread(NULL, 0, ReDrawWnd, (LPVOID)hWnd, 0, NULL);
+		//ReDrawWnd();
+		SetTimer(hWnd, 2, 50, NULL); // 보내기
 		SetTimer(hWnd, 1, 50, NULL); // 애니메이션
 		CreateThread(NULL, 0, RecvThread, (LPVOID)packet, 0, NULL);
 			break;
@@ -107,14 +122,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			HDC memdc = CreateCompatibleDC(hdc);
 			HBITMAP oldbit, hbit = CreateCompatibleBitmap(hdc, rt.right, rt.bottom);
 			oldbit = (HBITMAP)SelectObject(memdc, hbit);
+			SetBkMode(memdc, TRANSPARENT);
+			SetTextColor(memdc, RGB(0, 255, 255));
             // TODO: 여기에 memdc를 사용하는 그리기 코드를 추가합니다.
+
 
 			// 배경 그리기
 			pManager->DrawBackground(memdc, mapY);
-		
-		
 			pManager->DrawObejct(memdc);
-				
 			pManager->DrawScore(memdc);
 
 

@@ -5,10 +5,13 @@ class CPlayer :
 {
 private:
 	KEYDATA m_PlayerMove;
+	DWORD shootTime;
 public:
 	int Update(void);
 	void PlayerMove(void);
 	void Initialize(void);
+	DWORD GetShootTime(void);
+	void ResetTime(void);
 public:
 	CPlayer();
 	~CPlayer();

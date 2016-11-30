@@ -4,6 +4,7 @@
 
 void CClientManager::Init(HINSTANCE hInst)
 {
+	gameState = 0;
 	hBackground = LoadBitmap(hInst, MAKEINTRESOURCE(IDB_BITMAP1));
 	hPlane = LoadBitmap(hInst, MAKEINTRESOURCE(IDB_PLANE));
 	hPlayerBullet = LoadBitmap(hInst, MAKEINTRESOURCE(IDB_PBULLET));
@@ -11,14 +12,20 @@ void CClientManager::Init(HINSTANCE hInst)
 	hEnemy[0] = LoadBitmap(hInst, MAKEINTRESOURCE(IDB_MOB1));
 	hEnemy[10] = LoadBitmap(hInst, MAKEINTRESOURCE(IDB_MOB11));
 	hExplosion = LoadBitmap(hInst, MAKEINTRESOURCE(IDB_EXPLOS));
+
+
+	hFontScore = CreateFont(20, 0, 0, 0, FW_EXTRABOLD, 0, 0, 0, HANGEUL_CHARSET, 0, 0, 0, VARIABLE_PITCH | FF_ROMAN, "±¼¸²");
+	
 }
 
 void CClientManager::DrawScore(HDC hdc)
 {
 	//HDC memdc2 = CreateCompatibleDC(hdc);
+	oldFont = (HFONT)SelectObject(hdc, hFontScore);
 	char a[20];
-	wsprintf(a, "%d", score);
-	TextOut(hdc, 20, 400, a, strlen(a));
+	wsprintf(a, "Á¡¼ö : %d", score);
+	TextOut(hdc, 20, 50, a, strlen(a));
+	SelectObject(hdc, oldFont);
 }
 
 void CClientManager::DrawDummy(HDC hdc)
@@ -43,6 +50,16 @@ void CClientManager::UpdateDummy()
 	{
 		p->animNum += 1;
 	}
+}
+
+void CClientManager::ChangeGameState(int number)
+{
+	gameState = number;
+}
+
+int CClientManager::GetGameState()
+{
+	return gameState;
 }
 
 CClientManager::CClientManager()

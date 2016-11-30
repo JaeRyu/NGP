@@ -20,7 +20,9 @@ class CServerManager
 	std::list<CBullet> lBullet;
 	std::list<CEnemy> m_listEnemy;
 	std::vector<FilePattern> m_FilePattern;
-	//std::vector<> // 적 이 들어갈 콘테이너
+	
+	KEYDATA playerKey[2];
+
 	DWORD dPlayTime;
 	int clientScore[2];
 	FILE *fPattern;
@@ -31,10 +33,12 @@ class CServerManager
 	bool Rect_To_Rect(RECT Bullet, RECT Monster);
 
 public:
-	void update(KEYDATA keyData);
+	void Update();
+	void UpdatePlayer(KEYDATA keyData);
 	void AddPlayer(void);
 	void SetPlayTime();
 	void EnemyZeroTo(int n);
+	void SetKeyData(KEYDATA k);
 	int GetClientScore(int num);
 	std::vector<CPlayer> GetPlayers(void);
 	std::list<CBullet> GetBulletsLIst(void);

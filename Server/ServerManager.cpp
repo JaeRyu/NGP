@@ -4,21 +4,43 @@
 #include "Enemy.h"
 
 #define PI 3.141592f
-
+#define SQUARE(x) x*x
 using namespace std;
 
 
-void CServerManager::update(KEYDATA keyData)
-{
 
+void CServerManager::UpdatePlayer(KEYDATA keyData)
+{
 	int clientNum = keyData.clientNum;
 
-	if (clientNum != -1)
+	vPlayer[clientNum].SetKeyData(keyData);
+	vPlayer[clientNum].Update();
+
+	if (keyData.key[4] && GetTickCount() - vPlayer[clientNum].GetShootTime() > 20)
 	{
-		vPlayer[clientNum].SetKeyData(keyData);
-		vPlayer[clientNum].Update();
+		CBullet tBullet;
+
+		tBullet.SetType(0);
+		tBullet.SetClient(keyData.clientNum);
+		INFO tInfo;
+		tInfo.posX = vPlayer[clientNum].GetInfo().posX;
+		tInfo.posY = vPlayer[clientNum].GetInfo().posY;
+		tInfo.state = 1;
+		tBullet.SetInfo(tInfo);
+		tBullet.SetVector(0, -8);
+		lBullet.push_back(tBullet);
+		vPlayer[clientNum].ResetTime();
 	}
-	
+
+}
+
+void CServerManager::Update()
+{
+	for (int i = 0; i < vPlayer.size(); ++i)
+	{
+		UpdatePlayer(playerKey[i]);
+	}
+
 	if (m_FilePattern.size() > 0)
 	{
 		while (m_FilePattern[mobCount].time < GetTickCount() - dPlayTime) //몹추가
@@ -118,24 +140,8 @@ void CServerManager::update(KEYDATA keyData)
 
 		}
 	}
-
-	if (keyData.key[4])
-	{
-		//printf("call spacebar client: %d\n", clientNum);
-		CBullet tBullet;
-		tBullet.SetType(0);
-		tBullet.SetClient(keyData.clientNum);
-		INFO tInfo;
-		tInfo.posX = vPlayer[clientNum].GetInfo().posX;
-		tInfo.posY = vPlayer[clientNum].GetInfo().posY;
-		tInfo.state = 1;
-		tBullet.SetInfo(tInfo);
-		tBullet.SetVector(0, -8);
-		lBullet.push_back(tBullet);
-		//printf("[%d 번 클라]총알생성\n", clientNum);
-	}
-
 }
+
 
 void CServerManager::AddPlayer()
 {
@@ -155,6 +161,11 @@ void CServerManager::EnemyZeroTo(int n)
 		if (iter->GetInfo().state == 0)
 			iter->ChangeState(n);
 	}
+}
+
+void CServerManager::SetKeyData(KEYDATA k)
+{
+	playerKey[k.clientNum] = k;
 }
 
 int CServerManager::GetClientScore(int num)
@@ -187,12 +198,10 @@ int CServerManager::GetMapY(void)
 bool CServerManager::CirCleToCircle(INFO iA, INFO iB, int r1, int r2)
 {
 	RECT rc;
-	//50 by 50
-
-	//보스 100 by 100
-	
-
-	return false;
+	if (abs(r2 - r1) < sqrt(SQUARE(iB.posX - iA.posX) + SQUARE(iB.posY - iA.posY)))
+		return false;
+	else
+		return true;
 }
 
 bool CServerManager::OutOfRange(CObjects& obj)
@@ -209,9 +218,6 @@ bool CServerManager::Rect_To_Rect(RECT Bullet, RECT Monster)
 	RECT rc;
 	if (IntersectRect(&rc, &Bullet, &Monster))
 	{
-		//hp 깎아주고.
-		//충돌판정이 되면.
-		//cout << "충돌이 되었습니다. " << endl;
 		return true;
 	}
 	else
@@ -230,20 +236,10 @@ CServerManager::CServerManager()
 	fgets(s,100,fPattern);
 	while (fscanf(fPattern, "%d %d %d %d %d %d", &fp.time, &fp.mobNum, &fp.posX, &fp.posY, &fp.dx, &fp.dy) != EOF)
 	{
-		//printf("FileRead \n");
 		m_FilePattern.push_back(fp);
 	}
-	//fscanf(fPattern, "%d %d %d %d %d %d");
 	clientScore[0] = 0;
 	clientScore[1] = 0;
-
-	//CEnemy Temp(100, 150, 1);	//1번
-	//Temp.SetVector(0, 0);
-	CEnemy Temp2(300, 150, 11);	//11번
-	Temp2.SetVector(0, 0);
-
-	//m_listEnemy.push_back(Temp);
-	//m_listEnemy.push_back(Temp2);
 }
 
 

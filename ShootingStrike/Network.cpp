@@ -77,6 +77,13 @@ DWORD WINAPI RecvThread(LPVOID parameter)
 		WaitForSingleObject(hEvent,INFINITE);
 		// 데이터 받기
 
+		// 게임 상태 받기
+		// 0 : 대기 상태
+		// 1 : 게임 진행중
+		// 2 : 게임 엔드
+
+
+
 		//플레이어 수신
 		int playersize = 0;
 
@@ -154,6 +161,7 @@ DWORD WINAPI SendThread(LPVOID parameter)
 
 	if (retval == SOCKET_ERROR) {
 		err_quit("send()");
+		exit(1);
 	}
 
 	delete parameter;
@@ -174,6 +182,9 @@ BOOL CALLBACK DlgProc(HWND hDlg, UINT iMessage, WPARAM wParam, LPARAM lParam)
 			EndDialog(hDlg, 0);
 			return TRUE;
 		}
+		break;
+	case WM_CLOSE:
+		exit(1);
 		break;
 	}
 	return FALSE;
