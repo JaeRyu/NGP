@@ -15,7 +15,7 @@ void CClientManager::Init(HINSTANCE hInst)
 	redBrush = CreateSolidBrush(RGB(255, 0, 0));
 
 	hFontScore = CreateFont(20, 0, 0, 0, FW_EXTRABOLD, 0, 0, 0, HANGEUL_CHARSET, 0, 0, 0, VARIABLE_PITCH | FF_ROMAN, "±¼¸²");
-	
+	SoundManager.PlayWait();
 }
 
 void CClientManager::DrawScore(HDC hdc)
@@ -112,11 +112,13 @@ void CClientManager::ChangeGameState(int number)
 	gameState = number;
 	if (gameState == 1)
 	{
+		SoundManager.StopWait();
 		SoundManager.PlayBackGround();
 	}
 	else if (gameState == 2)
 	{
 		SoundManager.StopBackGround();
+		SoundManager.PlayLogOut();
 	}
 }
 
@@ -154,6 +156,7 @@ bool CClientManager::DrawObejct(HDC hdc)
 			d.info = vEnemy[p].GetInfo();
 			d.animNum = 0;
 			vDestroy.push_back(d);
+			SoundManager.PlayBomb();
 		}
 		else
 		vEnemy[p].Draw(hdc, hEnemy[vEnemy[p].GetType()-1], oldbit);
