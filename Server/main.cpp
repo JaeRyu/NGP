@@ -113,7 +113,6 @@ DWORD WINAPI SendThread(LPVOID parameter)
 	{
 		retval = send(client_sock[0], (char *)&itor->GetBulletInfo(), sizeof(IBULLET), 0);
 		retval = send(client_sock[1], (char *)&itor->GetBulletInfo(), sizeof(IBULLET), 0);
-
 	}
 
 	//점수전송
@@ -201,6 +200,9 @@ DWORD WINAPI UpdateThread(LPVOID clientNum)
 		if (GetTickCount() - updateSTime > 10)
 		{
 			m_Manager.Update();
+			mapY -= 1;
+			if (mapY < -800)
+				mapY = 7230;
 			updateSTime = GetTickCount();
 		}
 
@@ -208,15 +210,58 @@ DWORD WINAPI UpdateThread(LPVOID clientNum)
 		if (GetTickCount() - stime > 40 && sendEvent==false)
 		{
 			CreateThread(NULL, 0, SendThread, (LPVOID)&mapY, 0, NULL);
-			mapY -= 5;
-			if (mapY < -800)
-				mapY = 7230;
+		
 			stime = GetTickCount();
 		}
 	}
 
 	return 0;
 }
+
+DWORD WINAPI AcceptThread(LPVOID parameter)
+{
+	int retval;
+	int addrlen;
+	int clientSize = 0;
+	SOCKADDR_IN clientaddr;
+	SOCKET sock = (SOCKET)parameter;
+
+	bool start = true;
+
+
+	while (1) {
+		// accept()
+		addrlen = sizeof(clientaddr);
+		
+		client_sock[clientSize] = accept(sock, (SOCKADDR *)&clientaddr, &addrlen);
+		
+		int anp = 1;
+		setsockopt(client_sock[clientSize], IPPROTO_TCP, TCP_NODELAY, (char*)&anp, sizeof(int));
+		
+		printf("%s 접속\n", inet_ntoa(clientaddr.sin_addr));
+		
+		hThread = CreateThread(NULL, 0, RecvThread, (LPVOID)clientSize, 0, NULL);
+		if (hThread == NULL)
+			printf("리시브 스레드 생성 실패");
+
+		m_Manager.AddPlayer();
+		clientSize++;
+
+		if (clientSize > 1 && start)
+		{
+			printf("Update Thread Start\n");
+			hThread = CreateThread(NULL, 0, UpdateThread, (LPVOID)clientSize, 0, NULL);
+			if (hThread == NULL)
+				printf("업데이트 스레드 생성 실패");
+			start = false;
+		}
+
+	}
+
+
+	return 0;
+}
+
 int main()
 {
 	//CObjects::CObjects();
@@ -260,29 +305,36 @@ int main()
 	hUpdateHandle = CreateEvent(NULL, FALSE, TRUE, NULL);
 	if (hUpdateHandle == NULL)
 		return 1;
+	
+	bool start;
+	HANDLE HuThread = CreateThread(NULL, 0, AcceptThread, (LPVOID)listen_sock, 0, NULL);
+	WaitForSingleObject(HuThread, INFINITE);
 
-	while (1) {
-		// accept()
-		addrlen = sizeof(clientaddr);
-		client_sock[clientSize] = accept(listen_sock, (SOCKADDR *)&clientaddr, &addrlen);
-		printf("%s 접속\n", inet_ntoa(clientaddr.sin_addr));
-		hThread = CreateThread(NULL, 0, RecvThread, (LPVOID)clientSize, 0, NULL);
-		if (hThread == NULL)
-			printf("리시브 스레드 생성 실패");
-		
-		m_Manager.AddPlayer();
-		clientSize++;
+	//while (1) {
+	//	// accept()
+	//	addrlen = sizeof(clientaddr);
+	//	client_sock[clientSize] = accept(listen_sock, (SOCKADDR *)&clientaddr, &addrlen);
+	//	int anp = 1;
+	//	setsockopt(client_sock[clientSize], IPPROTO_TCP, TCP_NODELAY, (char*)&anp, sizeof(int));
+	//	printf("%s 접속\n", inet_ntoa(clientaddr.sin_addr));
+	//	hThread = CreateThread(NULL, 0, RecvThread, (LPVOID)clientSize, 0, NULL);
+	//	if (hThread == NULL)
+	//		printf("리시브 스레드 생성 실패");
+	//	
+	//	m_Manager.AddPlayer();
+	//	clientSize++;
 
-		bool start = true;
-		if (clientSize > 1 && start)
-		{
-			hThread = CreateThread(NULL, 0, UpdateThread, (LPVOID)clientSize, 0, NULL);
-			if (hThread == NULL)
-				printf("업데이트 스레드 생성 실패");
-			start = false;
-		}
 
-	}
+	//	if (clientSize > 1 && start)
+	//	{
+	//		printf("Update Thread Start\n");
+	//		hThread = CreateThread(NULL, 0, UpdateThread, (LPVOID)clientSize, 0, NULL);
+	//		if (hThread == NULL)
+	//			printf("업데이트 스레드 생성 실패");
+	//		start = false;
+	//	}
+
+	//}
 
 	closesocket(listen_sock);
 

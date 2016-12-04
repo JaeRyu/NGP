@@ -1,2 +1,13 @@
-﻿  Server.vcxproj -> C:\Users\SweetMyHome\Documents\Visual Studio 2015\Projects\NGP\Debug\Server.exe
+﻿  main.cpp
+c:\users\sweetmyhome\documents\visual studio 2015\projects\ngp\server\main.cpp(74): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
+c:\users\sweetmyhome\documents\visual studio 2015\projects\ngp\server\main.cpp(175): warning C4101: 'buf' :참조되지 않은 지역 변수입니다.
+c:\users\sweetmyhome\documents\visual studio 2015\projects\ngp\server\main.cpp(177): warning C4101: 'clientaddr' :참조되지 않은 지역 변수입니다.
+c:\users\sweetmyhome\documents\visual studio 2015\projects\ngp\server\main.cpp(174): warning C4101: 'retval' :참조되지 않은 지역 변수입니다.
+c:\users\sweetmyhome\documents\visual studio 2015\projects\ngp\server\main.cpp(241): warning C4996: 'inet_ntoa': Use inet_ntop() or InetNtop() instead or define _WINSOCK_DEPRECATED_NO_WARNINGS to disable deprecated API warnings
+  c:\program files (x86)\windows kits\8.1\include\um\winsock2.h(1868): note: 'inet_ntoa' 선언을 참조하십시오.
+c:\users\sweetmyhome\documents\visual studio 2015\projects\ngp\server\main.cpp(223): warning C4101: 'retval' :참조되지 않은 지역 변수입니다.
+c:\users\sweetmyhome\documents\visual studio 2015\projects\ngp\server\main.cpp(297): warning C4101: 'clientaddr' :참조되지 않은 지역 변수입니다.
+c:\users\sweetmyhome\documents\visual studio 2015\projects\ngp\server\main.cpp(309): warning C4101: 'start' :참조되지 않은 지역 변수입니다.
+c:\users\sweetmyhome\documents\visual studio 2015\projects\ngp\server\main.cpp(298): warning C4101: 'addrlen' :참조되지 않은 지역 변수입니다.
+  Server.vcxproj -> C:\Users\SweetMyHome\Documents\Visual Studio 2015\Projects\NGP\Debug\Server.exe
   Server.vcxproj -> C:\Users\SweetMyHome\Documents\Visual Studio 2015\Projects\NGP\Debug\Server.pdb (Full PDB)

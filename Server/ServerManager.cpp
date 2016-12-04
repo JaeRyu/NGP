@@ -112,7 +112,10 @@ void CServerManager::Update()
 					Temp.state = 0;
 					itor->SetInfo(Temp);
 
-					clientScore[i] = 0;
+					clientScore[i] -= 50;
+
+					if (clientScore[i] < 0)
+						clientScore[i] = 0;
 				}
 			}
 		}
