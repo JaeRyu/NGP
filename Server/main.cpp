@@ -57,7 +57,8 @@ DWORD WINAPI SendThread(LPVOID parameter)
 	sendEvent = true;
 
 	//게임 상태 전송
-	int GameState = 1;
+	int GameState = m_Manager.GetState();
+
 
 	retval = send(client_sock[0], (char *)&GameState, sizeof(int), 0);
 	retval = send(client_sock[1], (char *)&GameState, sizeof(int), 0);
@@ -77,7 +78,6 @@ DWORD WINAPI SendThread(LPVOID parameter)
 		retval = send(client_sock[0], (char*)&tInfo, sizeof(INFO), 0);
 		retval = send(client_sock[1], (char*)&tInfo, sizeof(INFO), 0);
 	}
-
 
 	//적 전송부분
 	std::list<CEnemy> LEnemy = sManager.GetMonster();
@@ -117,9 +117,22 @@ DWORD WINAPI SendThread(LPVOID parameter)
 
 	//점수전송
 	int tScore = sManager.GetClientScore(0);
+	int CilentScore = sManager.GetClientScore(1);
+
 	retval = send(client_sock[0], (char *)&tScore, sizeof(int), 0);
-	tScore = sManager.GetClientScore(1);;
+	retval = send(client_sock[0], (char *)&CilentScore, sizeof(int), 0);
+
+	// 각각 반대로 넣어주자.
+	retval = send(client_sock[1], (char *)&CilentScore, sizeof(int), 0);
 	retval = send(client_sock[1], (char *)&tScore, sizeof(int), 0);
+
+
+	//HP 보내기 여기에..
+	int iHp = vPlayer[0].GetHp();
+	int iHp2 = vPlayer[1].GetHp();
+	
+	retval = send(client_sock[0], (char*)&iHp, sizeof(int), 0);
+	retval = send(client_sock[1], (char*)&iHp2, sizeof(int), 0);
 
 
 	//맵좌표 전송
@@ -183,6 +196,7 @@ DWORD WINAPI UpdateThread(LPVOID clientNum)
 	
 	DWORD updateSTime = GetTickCount();
 	m_Manager.SetPlayTime();
+	m_Manager.ChangeState(1);
 	while (1)
 	{
 		//플레이어 업데이트
@@ -309,32 +323,6 @@ int main()
 	bool start;
 	HANDLE HuThread = CreateThread(NULL, 0, AcceptThread, (LPVOID)listen_sock, 0, NULL);
 	WaitForSingleObject(HuThread, INFINITE);
-
-	//while (1) {
-	//	// accept()
-	//	addrlen = sizeof(clientaddr);
-	//	client_sock[clientSize] = accept(listen_sock, (SOCKADDR *)&clientaddr, &addrlen);
-	//	int anp = 1;
-	//	setsockopt(client_sock[clientSize], IPPROTO_TCP, TCP_NODELAY, (char*)&anp, sizeof(int));
-	//	printf("%s 접속\n", inet_ntoa(clientaddr.sin_addr));
-	//	hThread = CreateThread(NULL, 0, RecvThread, (LPVOID)clientSize, 0, NULL);
-	//	if (hThread == NULL)
-	//		printf("리시브 스레드 생성 실패");
-	//	
-	//	m_Manager.AddPlayer();
-	//	clientSize++;
-
-
-	//	if (clientSize > 1 && start)
-	//	{
-	//		printf("Update Thread Start\n");
-	//		hThread = CreateThread(NULL, 0, UpdateThread, (LPVOID)clientSize, 0, NULL);
-	//		if (hThread == NULL)
-	//			printf("업데이트 스레드 생성 실패");
-	//		start = false;
-	//	}
-
-	//}
 
 	closesocket(listen_sock);
 

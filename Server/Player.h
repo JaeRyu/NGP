@@ -6,7 +6,17 @@ class CPlayer :
 private:
 	KEYDATA m_PlayerMove;
 	DWORD shootTime;
+
+	int iHp;
 public:
+	int GetHp(void)
+	{
+		return iHp;
+	}
+	void SetHp(int iA)
+	{
+		iHp = iA;
+	}
 	int Update(void);
 	void PlayerMove(void);
 	void Initialize(void);
