@@ -12,7 +12,7 @@ void CClientManager::Init(HINSTANCE hInst)
 	hEnemy[0] = LoadBitmap(hInst, MAKEINTRESOURCE(IDB_MOB1));
 	hEnemy[10] = LoadBitmap(hInst, MAKEINTRESOURCE(IDB_MOB11));
 	hExplosion = LoadBitmap(hInst, MAKEINTRESOURCE(IDB_EXPLOS));
-
+	redBrush = CreateSolidBrush(RGB(255, 0, 0));
 
 	hFontScore = CreateFont(20, 0, 0, 0, FW_EXTRABOLD, 0, 0, 0, HANGEUL_CHARSET, 0, 0, 0, VARIABLE_PITCH | FF_ROMAN, "굴림");
 	
@@ -23,8 +23,13 @@ void CClientManager::DrawScore(HDC hdc)
 	//HDC memdc2 = CreateCompatibleDC(hdc);
 	oldFont = (HFONT)SelectObject(hdc, hFontScore);
 	char a[20];
-	wsprintf(a, "점수 : %d", score);
+	wsprintf(a, "내 점수 : %d", score);
 	TextOut(hdc, 20, 50, a, strlen(a));
+
+	char a2[20];
+	wsprintf(a2, "팀 점수 : %d", pscore);
+	TextOut(hdc, 20, 80, a2, strlen(a2));
+
 	SelectObject(hdc, oldFont);
 }
 
@@ -44,6 +49,56 @@ void CClientManager::DrawDummy(HDC hdc)
 	);
 }
 
+void CClientManager::DrawHP(HDC hdc)
+{
+	oldBrush = (HBRUSH)SelectObject(hdc, redBrush);
+	Rectangle(hdc, 10, 10, iHp * 20, 20);
+	SelectObject(hdc, oldBrush);
+}
+
+void CClientManager::DrawWaitScene(HDC hdc)
+{
+	char *ch = "다른 플레이어를 기다리는 중 입니다.";
+	TextOut(hdc, 40, 400, ch, strlen(ch));
+}
+
+void CClientManager::DrawEndScene(HDC hdc)
+{
+	DrawBackground(hdc, m_MapY);
+
+	SetTextColor(hdc, RGB(255, 0, 0));
+	char a[20];
+	wsprintf(a, "내 점수 : %d", score);
+	TextOut(hdc, 50, 200, a, strlen(a));
+
+	SetTextColor(hdc, RGB(0, 255, 255));
+	char a2[20];
+	wsprintf(a2, "상대 점수 : %d", pscore);
+	TextOut(hdc, 50, 250, a2, strlen(a2));
+
+	char a3[100];
+	if (score > pscore)
+	{
+		
+		wsprintf(a3,"이겼습니다!!");
+		TextOut(hdc, 50, 100, a3, strlen(a3));
+
+	}
+	else if (score == pscore)
+	{
+		wsprintf(a3, "동점입니다!!");
+		TextOut(hdc, 50, 100, a3, strlen(a3));
+
+	}
+	else
+	{
+		wsprintf(a3, "졌습니다!!");
+		TextOut(hdc, 50, 100, a3, strlen(a3));
+
+	}
+
+}
+
 void CClientManager::UpdateDummy()
 {
 	for (std::list<DESTROYED>::iterator p = vDestroy.begin(); p != vDestroy.end(); ++p)
@@ -55,6 +110,14 @@ void CClientManager::UpdateDummy()
 void CClientManager::ChangeGameState(int number)
 {
 	gameState = number;
+	if (gameState == 1)
+	{
+		SoundManager.PlayBackGround();
+	}
+	else if (gameState == 2)
+	{
+		SoundManager.StopBackGround();
+	}
 }
 
 int CClientManager::GetGameState()

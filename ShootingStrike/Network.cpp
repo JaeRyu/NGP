@@ -55,6 +55,10 @@ void ConnectToServer(SOCKET sock)
 	serveraddr.sin_port = htons(9000);
 	int retval = connect(sock, (SOCKADDR *)&serveraddr, sizeof(serveraddr));
 	if (retval == SOCKET_ERROR) err_quit("connect()");
+
+	int anp = 1;
+	setsockopt(sock, IPPROTO_TCP, TCP_NODELAY, (char*)&anp, sizeof(int));
+
 }
 
 void CloseSocket(SOCKET sock)
@@ -145,6 +149,14 @@ DWORD WINAPI RecvThread(LPVOID parameter)
 		int score = 0;
 		retval = recv(sp.sock, (char *)&score, sizeof(int), 0);
 		Manager->SetScore(score);
+		retval = recv(sp.sock, (char *)&score, sizeof(int), 0);
+		Manager->SetPScore(score);
+
+
+		// 체력 수신
+		int iHp = 10;
+		retval = recv(sp.sock, (char *)&iHp, sizeof(int), 0);
+		Manager->SetHP(iHp);
 
 		// 맵좌표 수신
 		int mapY;

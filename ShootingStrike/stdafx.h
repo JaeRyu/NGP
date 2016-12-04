@@ -5,6 +5,7 @@
 #pragma once
 #pragma comment(lib,"msimg32.lib")
 #pragma comment(lib, "ws2_32.lib")
+#pragma comment(lib, "Sound/fmodex_vc.lib")
 
 //µð¹ö±×
 //#ifdef _DEBUG

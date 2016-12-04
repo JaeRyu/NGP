@@ -114,47 +114,52 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     
     case WM_PAINT:
         {
-		//printf("GameState : %d\n", pManager->GetGameState());
-		if (pManager->GetGameState() == 0)
-		{
-			PAINTSTRUCT ps;
-			HDC hdc = BeginPaint(hWnd, &ps);
-			char *ch = "다른 플레이어를 기다리는 중 입니다.";
-			TextOut(hdc, 40, 400, ch, strlen(ch));
-		}
-		else if(pManager->GetGameState() == 1)
-		{
-			//printf("Draw Objects\n");
+			if (pManager->GetGameState() == 0)
+			{
+				PAINTSTRUCT ps;
+				HDC hdc = BeginPaint(hWnd, &ps);
+				pManager->DrawWaitScene(hdc);
+				EndPaint(hWnd, &ps);
+			}
+			else if (pManager->GetGameState() == 1)
+			{
+				WaitForSingleObject(hEvent, INFINITE);
+				RECT rt;
+				GetClientRect(hWnd, &rt);
+				PAINTSTRUCT ps;
+				HDC hdc = BeginPaint(hWnd, &ps);
+				HDC memdc = CreateCompatibleDC(hdc);
+				HBITMAP oldbit, hbit = CreateCompatibleBitmap(hdc, rt.right, rt.bottom);
+				oldbit = (HBITMAP)SelectObject(memdc, hbit);
 
-			WaitForSingleObject(hEvent, INFINITE);
-			RECT rt;
-			GetClientRect(hWnd, &rt);
-			PAINTSTRUCT ps;
-			HDC hdc = BeginPaint(hWnd, &ps);
-			HDC memdc = CreateCompatibleDC(hdc);
-			HBITMAP oldbit, hbit = CreateCompatibleBitmap(hdc, rt.right, rt.bottom);
-			oldbit = (HBITMAP)SelectObject(memdc, hbit);
-			SetBkMode(memdc, TRANSPARENT);
-			SetTextColor(memdc, RGB(0, 255, 255));
-			// TODO: 여기에 memdc를 사용하는 그리기 코드를 추가합니다.
+				SetBkMode(memdc, TRANSPARENT);
+				SetTextColor(memdc, RGB(0, 255, 255));
+				// TODO: 여기에 memdc를 사용하는 그리기 코드를 추가합니다.
 
 
-			// 배경 그리기
-			pManager->DrawBackground(memdc, mapY);
-			pManager->DrawObejct(memdc);
-			pManager->DrawScore(memdc);
+				// 그리기
+				pManager->DrawBackground(memdc, mapY);
+				pManager->DrawObejct(memdc);
+				pManager->DrawScore(memdc);
+				pManager->DrawHP(memdc);
 
-
-			// -- 여기까지
-			BitBlt(hdc, 0, 0, rt.right, rt.bottom, memdc, 0, 0, SRCCOPY);
-			SelectObject(memdc, oldbit);
-			DeleteObject(memdc);
-			DeleteObject(hbit);
-			DeleteObject(oldbit);
-			EndPaint(hWnd, &ps);
-			SetEvent(hEvent);
-		}
-
+				// -- 여기까지
+				BitBlt(hdc, 0, 0, rt.right, rt.bottom, memdc, 0, 0, SRCCOPY);
+				SelectObject(memdc, oldbit);
+				DeleteObject(memdc);
+				DeleteObject(hbit);
+				DeleteObject(oldbit);
+				EndPaint(hWnd, &ps);
+				SetEvent(hEvent);	
+			}
+			else if (pManager->GetGameState() == 2)
+			{
+				PAINTSTRUCT ps;
+				HDC hdc = BeginPaint(hWnd, &ps);
+				SetBkMode(hdc, TRANSPARENT);
+				pManager->DrawEndScene(hdc);
+				EndPaint(hWnd, &ps);
+			}
         }
         break;
 	case WM_TIMER:

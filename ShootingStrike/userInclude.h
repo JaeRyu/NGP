@@ -1,6 +1,8 @@
 #pragma once
 
 #include"stdafx.h"
+#include "Sound\fmod.hpp"
+#include "Sound.h"
 #include"Resource.h"
 #include"structType.h"
 #include"GameObject.h"
