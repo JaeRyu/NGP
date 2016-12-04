@@ -95,10 +95,7 @@ void CServerManager::Update()
 					INFO Temp = itor->GetInfo();
 					Temp.state = 0;
 					itor->SetInfo(Temp);
-
-
 					iter->HitDamage(10);
-
 				}
 			}
 		}
@@ -112,8 +109,14 @@ void CServerManager::Update()
 					Temp.state = 0;
 					itor->SetInfo(Temp);
 
-					clientScore[i] -= 50;
+					//clientScore[i] -= 50;
+					vPlayer[i].SetHp(vPlayer[i].GetHp() - 1);
 
+					if (vPlayer[i].GetHp() <= 0)
+					{
+						ChangeState(2);
+						vPlayer[i].SetHp(0);
+					}
 					if (clientScore[i] < 0)
 						clientScore[i] = 0;
 				}
@@ -257,6 +260,7 @@ CServerManager::CServerManager()
 	}
 	clientScore[0] = 0;
 	clientScore[1] = 0;
+	iGameState = 1;
 }
 
 

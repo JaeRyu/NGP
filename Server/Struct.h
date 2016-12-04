@@ -1,4 +1,8 @@
 #pragma once
+
+#include <windows.h>
+
+
 typedef struct tagInfo {
 	short posX;
 	short posY;
@@ -15,6 +19,8 @@ typedef struct ObjectInfo {
 	WORD type;
 	INFO info;
 }IBULLET, EnemyInfo;
+
+
 //typedef struct ENEMYINFO {
 //	BYTE type;
 //	INFO info;

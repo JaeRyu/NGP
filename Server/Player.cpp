@@ -6,6 +6,7 @@ CPlayer::CPlayer()
 	m_tInfo.posX = 200;
 	m_tInfo.posY = 600;
 	shootTime = GetTickCount();
+	iHp = 10;
 }
 int CPlayer::Update(void)
 {

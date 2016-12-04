@@ -151,8 +151,16 @@
     <ClCompile Include="Objects.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="ServerManager.cpp" />
+    <ClCompile Include="SoundMgr.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\ShootingStrike\fmod.h" />
+    <ClInclude Include="..\ShootingStrike\fmod.hpp" />
+    <ClInclude Include="..\ShootingStrike\fmod_codec.h" />
+    <ClInclude Include="..\ShootingStrike\fmod_dsp.h" />
+    <ClInclude Include="..\ShootingStrike\fmod_errors.h" />
+    <ClInclude Include="..\ShootingStrike\fmod_memoryinfo.h" />
+    <ClInclude Include="..\ShootingStrike\fmod_output.h" />
     <ClInclude Include="Bullet.h" />
     <ClInclude Include="Const.h" />
     <ClInclude Include="Define.h" />
@@ -160,6 +168,7 @@
     <ClInclude Include="Objects.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="ServerManager.h" />
+    <ClInclude Include="SoundMgr.h" />
     <ClInclude Include="Struct.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
