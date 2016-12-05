@@ -66,6 +66,10 @@ void CClientManager::DrawEndScene(HDC hdc)
 {
 	DrawBackground(hdc, m_MapY);
 
+	HFONT mFont = CreateFont(40, 0, 0, 0, FW_EXTRABOLD, 0, 0, 0, HANGEUL_CHARSET, 0, 0, 0, VARIABLE_PITCH | FF_ROMAN, "굴림");
+	HFONT old;
+	old = (HFONT)SelectObject(hdc, mFont);
+
 	SetTextColor(hdc, RGB(255, 0, 0));
 	char a[20];
 	wsprintf(a, "내 점수 : %d", score);
@@ -75,7 +79,7 @@ void CClientManager::DrawEndScene(HDC hdc)
 	char a2[20];
 	wsprintf(a2, "상대 점수 : %d", pscore);
 	TextOut(hdc, 50, 250, a2, strlen(a2));
-
+	
 	char a3[100];
 	if (score > pscore)
 	{
@@ -96,7 +100,8 @@ void CClientManager::DrawEndScene(HDC hdc)
 		TextOut(hdc, 50, 100, a3, strlen(a3));
 
 	}
-
+	SelectObject(hdc, old);
+	DeleteObject(mFont);
 }
 
 void CClientManager::UpdateDummy()
